@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 });
 
 console.log('Initializing WhatsApp Client...');
-client.initialize();
+client.initialize().catch(err => console.error('Initialization failed:', err));
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
