@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Web JS Tester</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input,
+        textarea,
+        button {
+            width: 100%;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #128C7E;
+        }
+
+        button.test-btn {
+            background-color: #3498db;
+        }
+
+        button.test-btn:hover {
+            background-color: #2980b9;
+        }
+
+        #response,
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info {
+            background-color: #e2e3e5;
+            color: #383d41;
+            border: 1px solid #d6d8db;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>WhatsApp API Tester</h2>
+
+        <label for="baseUrl">Server URL:</label>
+        <input type="text" id="baseUrl" placeholder="e.g., http://localhost:3000 or https://your-app.easypanel.host"
+            value="http://localhost:3000">
+        <button class="test-btn" onclick="checkConnection()">Check Connection</button>
+        <div id="status"></div>
+
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+        <label for="number">Destination Number:</label>
+        <input type="text" id="number" placeholder="e.g., 628123456789 (Use Country Code, No +)">
+
+        <label for="message">Message:</label>
+        <textarea id="message" placeholder="Type your message here..." rows="4"></textarea>
+
+        <button onclick="sendMessage()">Send Message</button>
+
+        <div id="response"></div>
+    </div>
+
+    <script>
+        async function checkConnection() {
+            const baseUrl = document.getElementById('baseUrl').value.replace(/\/$/, '');
+            const statusDiv = document.getElementById('status');
+
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'info';
+            statusDiv.textContent = 'Checking connection...';
+
+            try {
+                const res = await fetch(baseUrl + '/');
+                const text = await res.text();
+                statusDiv.className = 'success';
+                statusDiv.textContent = 'Connected! Server response: ' + text;
+            } catch (error) {
+                statusDiv.className = 'error';
+                statusDiv.textContent = 'Connection Failed: ' + error.message + '\n\nPossible reasons:\n1. Server is not running.\n2. URL is incorrect.\n3. CORS is not enabled on the server.';
+            }
+        }
+
+        async function sendMessage() {
+            const baseUrl = document.getElementById('baseUrl').value.replace(/\/$/, '');
+            const apiUrl = baseUrl + '/api/send-message';
+            const number = document.getElementById('number').value;
+            const message = document.getElementById('message').value;
+            const responseDiv = document.getElementById('response');
+
+            if (!number || !message) {
+                alert('Please fill in both number and message');
+                return;
+            }
+
+            responseDiv.style.display = 'block';
+            responseDiv.className = 'info';
+            responseDiv.textContent = 'Sending...';
+
+            try {
+                const res = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ number, message })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    responseDiv.className = 'success';
+                } else {
+                    responseDiv.className = 'error';
+                }
+
+                responseDiv.textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                responseDiv.className = 'error';
+                responseDiv.textContent = 'Failed to send: ' + error.message;
+            }
+        }
+    </script>
+</body>
+
+</html>
