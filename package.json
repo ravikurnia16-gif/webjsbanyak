@@ -14,6 +14,6 @@
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "qrcode-terminal": "^0.12.0",
-    "whatsapp-web.js": "git+https://github.com/pedroslopez/whatsapp-web.js.git"
+    "whatsapp-web.js": "https://github.com/pedroslopez/whatsapp-web.js/tarball/main"
   }
 }
