@@ -3,8 +3,11 @@ const qrcode = require('qrcode-terminal');
 
 const client = new Client({
     authStrategy: new LocalAuth(),
-    authTimeoutMs: 0,       // Disable auth timeout completely
-    qrTimeoutMs: 0,         // Disable QR timeout completely
+    authTimeoutMs: 0,
+    qrTimeoutMs: 0,
+    webVersionCache: {
+        type: 'none'   // Always fetch fresh WhatsApp Web (prevents detached frame)
+    },
     puppeteer: {
         headless: true,
         args: [
@@ -16,9 +19,7 @@ const client = new Client({
             '--no-zygote',
             '--disable-gpu',
             '--disable-features=IsolateOrigins,site-per-process',
-            '--disable-site-isolation-trials',
-            '--renderer-process-limit=2',
-            '--js-flags=--max-old-space-size=512'
+            '--disable-site-isolation-trials'
         ]
     }
 });
