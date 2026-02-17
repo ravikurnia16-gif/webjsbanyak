@@ -15,30 +15,21 @@ app.get('/', (req, res) => {
     res.send('WhatsApp API Gateway is running');
 });
 
-// Initialize with retry logic
-const MAX_RETRIES = 5;
-let retryCount = 0;
+// Start HTTP server first so EasyPanel sees a healthy container
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
 
+// Then initialize WhatsApp (may take time for Chromium to start)
 async function initializeClient() {
     try {
-        console.log(`Initializing WhatsApp Client... (attempt ${retryCount + 1}/${MAX_RETRIES})`);
+        console.log('Initializing WhatsApp Client...');
         await client.initialize();
     } catch (err) {
-        retryCount++;
-        console.error(`Initialization failed (attempt ${retryCount}/${MAX_RETRIES}):`, err.message);
-
-        if (retryCount < MAX_RETRIES) {
-            const delay = retryCount * 5000; // 5s, 10s, 15s, 20s, 25s
-            console.log(`Retrying in ${delay / 1000} seconds...`);
-            setTimeout(initializeClient, delay);
-        } else {
-            console.error('Max retries reached. Please restart the container manually.');
-        }
+        console.error('Initialization failed:', err.message);
+        console.log('Exiting to trigger container restart...');
+        process.exit(1); // Let Docker/EasyPanel restart the container
     }
 }
 
 initializeClient();
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});

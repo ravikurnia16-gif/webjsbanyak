@@ -3,8 +3,8 @@ const qrcode = require('qrcode-terminal');
 
 const client = new Client({
     authStrategy: new LocalAuth(),
-    authTimeoutMs: 300000, // 5 minutes
-    qrTimeoutMs: 120000,   // 2 minutes for QR
+    authTimeoutMs: 0,       // Disable auth timeout completely
+    qrTimeoutMs: 0,         // Disable QR timeout completely
     puppeteer: {
         headless: true,
         args: [
@@ -15,8 +15,10 @@ const client = new Client({
             '--no-first-run',
             '--no-zygote',
             '--disable-gpu',
-            '--single-process',
-            '--disable-features=site-per-process'
+            '--disable-features=IsolateOrigins,site-per-process',
+            '--disable-site-isolation-trials',
+            '--renderer-process-limit=2',
+            '--js-flags=--max-old-space-size=512'
         ]
     }
 });
@@ -27,7 +29,7 @@ client.on('loading_screen', (percent, message) => {
 
 client.on('qr', (qr) => {
     qrcode.generate(qr, { small: true });
-    console.log('QR RECEIVED - Please scan immediately');
+    console.log('QR RECEIVED - Please scan with WhatsApp > Linked Devices');
 });
 
 client.on('ready', () => {
@@ -43,7 +45,9 @@ client.on('auth_failure', msg => {
 });
 
 client.on('disconnected', (reason) => {
-    console.log('Client was logged out', reason);
+    console.log('Client was logged out:', reason);
+    console.log('Exiting to trigger container restart...');
+    process.exit(1);
 });
 
 module.exports = client;
