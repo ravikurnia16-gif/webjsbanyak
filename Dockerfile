@@ -1,6 +1,6 @@
 FROM public.ecr.aws/docker/library/node:20-slim
 
-# Install latest chromium and fonts
+# Install chromium, fonts, and git (needed for whatsapp-web.js tarball)
 RUN apt-get update \
     && apt-get install -y chromium fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 git \
       --no-install-recommends \
@@ -16,17 +16,14 @@ ENV PORT=2000
 # Create app directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Copy package.json only (not lock file to avoid CRLF issues)
+COPY package.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies fresh
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
-
-# Create shared memory directory with more space
-RUN mkdir -p /tmp/shm
 
 EXPOSE 2000
 
