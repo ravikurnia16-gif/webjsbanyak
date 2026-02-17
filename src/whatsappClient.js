@@ -3,6 +3,8 @@ const qrcode = require('qrcode-terminal');
 
 const client = new Client({
     authStrategy: new LocalAuth(),
+    authTimeoutMs: 0,
+    qrTimeoutMs: 0,
     webVersionCache: {
         type: 'none'
     },

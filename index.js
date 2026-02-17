@@ -20,26 +20,28 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-// Initialize WhatsApp with retry
-const MAX_RETRIES = 10;
-let attempt = 0;
-
+// Initialize WhatsApp with exit-on-fail
 async function startWhatsApp() {
-    attempt++;
-    console.log(`Initializing WhatsApp Client... (attempt ${attempt}/${MAX_RETRIES})`);
+    console.log('Initializing WhatsApp Client...');
     try {
         await client.initialize();
     } catch (err) {
         const msg = err && err.message ? err.message : String(err);
         console.error(`Initialization failed: ${msg}`);
-        if (attempt < MAX_RETRIES) {
-            const wait = Math.min(attempt * 5, 30);
-            console.log(`Retrying in ${wait} seconds...`);
-            setTimeout(startWhatsApp, wait * 1000);
-        } else {
-            console.error('Max retries reached. Restarting process...');
-            process.exit(1);
+
+        // If it failed, we must exit to let the container restart cleanly.
+        // This is the only way to guarantee the Chromium lock is released.
+        console.log('Exiting in 5 seconds to trigger a fresh container start...');
+
+        try {
+            await client.destroy();
+        } catch (destroyErr) {
+            // Ignore destroy errors
         }
+
+        setTimeout(() => {
+            process.exit(1);
+        }, 5000);
     }
 }
 
