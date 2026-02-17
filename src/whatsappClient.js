@@ -14,7 +14,9 @@ const client = new Client({
             '--disable-accelerated-2d-canvas',
             '--no-first-run',
             '--no-zygote',
-            '--disable-gpu'
+            '--disable-gpu',
+            '--single-process',
+            '--disable-features=site-per-process'
         ]
     }
 });
@@ -38,7 +40,6 @@ client.on('authenticated', () => {
 
 client.on('auth_failure', msg => {
     console.error('AUTHENTICATION FAILURE', msg);
-    console.log('Restarting to try again...');
 });
 
 client.on('disconnected', (reason) => {
