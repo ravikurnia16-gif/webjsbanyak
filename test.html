@@ -107,8 +107,16 @@
 
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
 
-        <label for="number">Destination Number:</label>
-        <input type="text" id="number" placeholder="e.g., 628123456789 (Use Country Code, No +)">
+        <label for="number">Destination (Number or Group ID):</label>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="number" placeholder="e.g., 628123456789 or 123456@g.us">
+            <button onclick="fetchGroups()" style="width: auto; white-space: nowrap;">Get Groups</button>
+        </div>
+
+        <select id="groupSelect" style="display: none; margin-bottom: 15px;"
+            onchange="document.getElementById('number').value = this.value">
+            <option value="">-- Select a Group --</option>
+        </select>
 
         <label for="message">Message:</label>
         <textarea id="message" placeholder="Type your message here..." rows="4"></textarea>
@@ -135,6 +143,39 @@
             } catch (error) {
                 statusDiv.className = 'error';
                 statusDiv.textContent = 'Connection Failed: ' + error.message + '\n\nPossible reasons:\n1. Server is not running.\n2. URL is incorrect.\n3. CORS is not enabled on the server.';
+            }
+        }
+
+        async function fetchGroups() {
+            const baseUrl = document.getElementById('baseUrl').value.replace(/\/$/, '');
+            const statusDiv = document.getElementById('status');
+            const select = document.getElementById('groupSelect');
+
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'info';
+            statusDiv.textContent = 'Fetching groups...';
+
+            try {
+                const res = await fetch(baseUrl + '/api/groups');
+                const data = await res.json();
+
+                if (data.status === 'success') {
+                    select.innerHTML = '<option value="">-- Select a Group --</option>';
+                    data.groups.forEach(group => {
+                        const option = document.createElement('option');
+                        option.value = group.id;
+                        option.textContent = group.name;
+                        select.appendChild(option);
+                    });
+                    select.style.display = 'block';
+                    statusDiv.className = 'success';
+                    statusDiv.textContent = `Found ${data.groups.length} groups. Select one to auto-fill the ID.`;
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                statusDiv.className = 'error';
+                statusDiv.textContent = 'Failed to fetch groups: ' + error.message;
             }
         }
 
