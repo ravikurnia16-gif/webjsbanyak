@@ -6,10 +6,11 @@ const client = new Client({
     authTimeoutMs: 0,
     qrTimeoutMs: 0,
     webVersionCache: {
-        type: 'none'   // Always fetch fresh WhatsApp Web (prevents detached frame)
+        type: 'none'
     },
     puppeteer: {
         headless: true,
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -47,7 +48,6 @@ client.on('auth_failure', msg => {
 
 client.on('disconnected', (reason) => {
     console.log('Client was logged out:', reason);
-    console.log('Exiting to trigger container restart...');
     process.exit(1);
 });
 
