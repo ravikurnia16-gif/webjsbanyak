@@ -11,6 +11,9 @@ RUN apt-get update \
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
+# Set default port
+ENV PORT=2000
+
 # Create app directory
 WORKDIR /usr/src/app
 
@@ -24,7 +27,7 @@ RUN npm install
 COPY . .
 
 # Expose port
-EXPOSE 3000
+EXPOSE 2000
 
 # Start command
 CMD [ "node", "index.js" ]
