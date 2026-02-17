@@ -1,20 +1,35 @@
-FROM ghcr.io/puppeteer/puppeteer:latest
+FROM node:20-slim
 
-# Set default port
+# Install chromium and dependencies
+RUN apt-get update \
+    && apt-get install -y \
+       chromium \
+       fonts-ipafont-gothic \
+       fonts-wqy-zenhei \
+       fonts-thai-tlwg \
+       fonts-kacst \
+       fonts-freefont-ttf \
+       libxss1 \
+       git \
+       --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+# Puppeteer config
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+
+# App config
 ENV PORT=2000
-
-# Skip Chromium download (already installed in base image)
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 WORKDIR /usr/src/app
 
-# Copy package.json
+# Copy only package.json (avoid CRLF lock file issues)
 COPY package.json ./
 
-# Install dependencies
+# Install deps
 RUN npm install --legacy-peer-deps
 
-# Copy source code
+# Copy source
 COPY . .
 
 EXPOSE 2000
