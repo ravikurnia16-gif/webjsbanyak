@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Gateway Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; }
+        .whatsapp-green { color: #25D366; }
+        .whatsapp-bg { background-color: #25D366; }
+        .whatsapp-bg:hover { background-color: #128C7E; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .session-item.active { background-color: #eefaf2; border-color: #25D366; }
+        .toast { position: fixed; bottom: 2rem; right: 2rem; background: #333; color: white; padding: 0.8rem 1.5rem; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: all 0.3s; opacity: 0; pointer-events: none; }
+        .toast.show { opacity: 1; pointer-events: auto; }
+    </style>
+</head>
+<body class="h-screen flex flex-col">
+    <header class="bg-white px-8 py-4 flex justify-between items-center border-b shadow-sm z-10">
+        <div class="flex items-center gap-3">
+            <svg class="whatsapp-green w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M12.031 6.172c-2.277 0-4.132 1.854-4.132 4.131 0 2.276 1.854 4.131 4.132 4.131 2.276 0 4.131-1.854 4.131-4.131 0-2.276-1.854-4.131-4.131-4.131zm0 7.21c-1.698 0-3.079-1.381-3.079-3.079 0-1.698 1.381-3.079 3.079-3.079s3.079 1.381 3.079 3.079c0 1.698-1.381 3.079-3.079 3.079zm.012-9.395c-5.523 0-10 4.478-10 10s4.477 10 10 10c1.71 0 3.313-.43 4.721-1.185l4.897 1.286-1.286-4.897c.755-1.408 1.185-3.011 1.185-4.721 0-5.522-4.477-10-9.517-10zM12.031 22.016c-4.417 0-8-3.584-8-8s3.583-8 8-8 8 3.584 8 8-3.583 8-8 8z"/></svg>
+            <h1 class="text-xl font-bold">WhatsApp Gateway <span class="text-sm font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded ml-2">Multi-Account</span></h1>
+        </div>
+        <div class="flex gap-4">
+            <input id="newSessionId" type="text" placeholder="Session Name..." class="px-4 py-2 border rounded-lg outline-none focus:border-green-500 text-sm">
+            <button onclick="createSession()" class="whatsapp-bg text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition-all">
+                Add Account
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 flex overflow-hidden">
+        <aside class="w-80 bg-white border-r p-6 flex flex-col gap-6 overflow-y-auto">
+            <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Active Sessions</h2>
+            <div id="sessionList" class="flex flex-col gap-3">
+                <!-- Sessions will appear here -->
+                <p class="text-gray-400 text-center py-8 italic">No active sessions</p>
+            </div>
+        </aside>
+
+        <section id="content" class="flex-1 p-10 flex justify-center items-start overflow-y-auto">
+            <!-- Initial State -->
+            <div class="card p-10 max-w-xl w-full text-center flex flex-col items-center gap-4">
+                <svg class="text-gray-200 w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h2M4 8h16"></path></svg>
+                <h2 class="text-2xl font-bold text-gray-700">Welcome to Dashboard</h2>
+                <p class="text-gray-500">Select a session or add a new one to get started.</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast">Status Message</div>
+
+    <script>
+        const API_KEY = 'secret123';
+        const socket = io();
+        let currentSessions = [];
+        let selectedSessionId = null;
+
+        // Socket Events
+        socket.on('qr', ({ sessionId, qr }) => {
+            showQr(sessionId, qr);
+        });
+
+        socket.on('ready', ({ sessionId }) => {
+            showToast(`Session ${sessionId} is ready!`);
+            fetchSessions();
+        });
+
+        socket.on('disconnected', ({ sessionId }) => {
+            showToast(`Session ${sessionId} disconnected.`);
+            fetchSessions();
+        });
+
+        // Initialize
+        fetchSessions();
+
+        async function fetchSessions() {
+            try {
+                const res = await axios.get('/api/sessions', { headers: { 'x-api-key': API_KEY } });
+                currentSessions = res.data;
+                renderSessions();
+            } catch (err) {
+                console.error('Fetch sessions failed', err);
+            }
+        }
+
+        function renderSessions() {
+            const list = document.getElementById('sessionList');
+            list.innerHTML = '';
+            if (currentSessions.length === 0) {
+                list.innerHTML = '<p class="text-gray-400 text-center py-8 italic">No active sessions</p>';
+                return;
+            }
+
+            currentSessions.forEach(s => {
+                const div = document.createElement('div');
+                div.className = `session-item border p-4 rounded-xl cursor-pointer transition-all hover:bg-gray-50 ${selectedSessionId === s.id ? 'active border-green-500 bg-green-50' : ''}`;
+                div.onclick = () => selectSession(s.id);
+                div.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold">${s.id}</span>
+                        <span class="text-xs text-green-600 flex items-center gap-1">● Connected</span>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        async function createSession() {
+            const input = document.getElementById('newSessionId');
+            const sessionId = input.value;
+            if (!sessionId) return;
+            try {
+                await axios.post('/api/sessions', { sessionId }, { headers: { 'x-api-key': API_KEY } });
+                input.value = '';
+                showToast('Initializing... QR code will appear soon.');
+            } catch (err) {
+                showToast('Error creating session');
+            }
+        }
+
+        function showQr(sessionId, qr) {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="card p-10 max-w-xl w-full text-center">
+                    <h2 class="text-2xl font-bold mb-2">Scan QR for <span class="text-green-600">${sessionId}</span></h2>
+                    <div class="bg-gray-50 p-6 rounded-xl border border-dashed my-6 inline-block">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qr)}" alt="QR Code">
+                    </div>
+                    <p class="text-gray-500">Open WhatsApp on your phone and scan the code to link.</p>
+                </div>
+            `;
+        }
+
+        function selectSession(sessionId) {
+            selectedSessionId = sessionId;
+            renderSessions();
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="card p-10 max-w-xl w-full text-left">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 class="text-2xl font-bold">Messaging: <span class="text-green-600">${sessionId}</span></h2>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-1">Recipient Number</label>
+                            <input id="phoneNumber" type="text" placeholder="628123456789" class="w-full px-4 py-3 border rounded-xl outline-none focus:border-green-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-1">Message</label>
+                            <textarea id="messageText" placeholder="Type your message here..." class="w-full h-32 px-4 py-3 border rounded-xl outline-none focus:border-green-500 resize-none"></textarea>
+                        </div>
+                        <button onclick="sendMessage()" class="w-full whatsapp-bg text-white py-4 rounded-xl font-bold text-lg flex justify-center items-center gap-3 active:scale-95 transition-all">
+                            Send Message
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function sendMessage() {
+            const number = document.getElementById('phoneNumber').value;
+            const message = document.getElementById('messageText').value;
+            if (!number || !message) return;
+            try {
+                await axios.post('/api/send-message', { sessionId: selectedSessionId, number, message }, { headers: { 'x-api-key': API_KEY } });
+                document.getElementById('messageText').value = '';
+                showToast('Message sent!');
+            } catch (err) {
+                showToast('Failed to send message');
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>

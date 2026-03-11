@@ -1,0 +1,323 @@
+{"level":"info","message":"Server is running on port 3000","timestamp":"2026-02-17T15:16:18.122Z"}
+{"level":"info","message":"Initializing WhatsApp Client...","timestamp":"2026-02-17T15:16:18.128Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-02-17T15:16:39.307Z"}
+{"level":"info","message":"Server is running on port 3000","timestamp":"2026-03-11T03:02:55.945Z"}
+{"level":"info","message":"Initializing WhatsApp Client...","timestamp":"2026-03-11T03:02:55.949Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:03:28.206Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:04:28.171Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:04:48.172Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:05:08.180Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:05:28.193Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:05:48.198Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:06:59.477Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:07:59.485Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:08:19.488Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:08:39.490Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:08:59.498Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:09:19.500Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:10:30.959Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:11:30.965Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:11:50.973Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:12:10.977Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:12:30.986Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:12:50.999Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:14:02.531Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:15:02.548Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:15:22.550Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:15:42.554Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:16:02.563Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:16:22.571Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:17:34.483Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:18:34.491Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:18:54.504Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:19:14.516Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:19:34.519Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:19:54.531Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:21:05.511Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:22:05.514Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:22:25.518Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:22:45.528Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:23:05.531Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:23:25.541Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:24:36.897Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:25:36.909Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:25:56.919Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:26:16.926Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:26:36.928Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:26:56.937Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:28:08.490Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:29:08.506Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:29:28.515Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:29:48.530Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:30:08.531Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:30:28.533Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:31:40.954Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:32:40.971Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:33:00.982Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:33:20.991Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:33:41.007Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:34:01.019Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:39:04.425Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:40:04.434Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:40:24.438Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:40:44.450Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:41:04.465Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:41:24.474Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:42:35.593Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:43:35.606Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:43:55.616Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:44:15.622Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:44:35.627Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:44:55.633Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:46:06.827Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:47:06.834Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:47:26.850Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:47:46.857Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:48:06.862Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:48:26.868Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:49:37.575Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:50:37.582Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:50:57.595Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:51:17.602Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:51:37.609Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:51:57.624Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:53:08.761Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:54:08.766Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:54:28.767Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:54:48.769Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:55:08.772Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:55:28.782Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:56:39.929Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:57:39.933Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:57:59.947Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:58:19.963Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:58:39.978Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T03:58:59.983Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:00:11.028Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:01:11.029Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:01:31.037Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:01:51.051Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:02:11.056Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:02:31.057Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:03:42.294Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:04:42.305Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:05:02.317Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:05:22.331Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:05:42.344Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:06:02.352Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:07:13.834Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:08:13.841Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:08:33.843Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:08:53.848Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:09:13.856Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:09:33.864Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:10:44.528Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:11:44.534Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:12:04.536Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:12:24.548Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:12:44.550Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:13:04.563Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:14:17.254Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:15:17.267Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:15:37.274Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:15:57.279Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:16:17.291Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:16:37.306Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:17:48.311Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:18:48.318Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:19:08.324Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:19:28.340Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:19:48.346Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:20:08.354Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:21:19.435Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:22:19.441Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:22:39.448Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:22:59.451Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:23:19.453Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:23:39.463Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:24:50.984Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:25:50.988Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:26:10.996Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:26:31.003Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:26:51.010Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:27:11.021Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:28:22.199Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:29:22.218Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:29:42.226Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:30:02.235Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:30:22.243Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:30:42.253Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:31:53.357Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:32:53.363Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:33:13.364Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:33:33.380Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:33:53.380Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:34:13.388Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:35:24.909Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:36:24.923Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:36:44.931Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:37:04.934Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:37:24.947Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:37:44.957Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:38:58.582Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:39:58.598Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:40:18.607Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:40:38.609Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:40:58.612Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:41:18.625Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:42:29.781Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:43:29.793Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:43:49.795Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:44:09.797Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:44:29.800Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:44:49.807Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:46:01.043Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:47:01.045Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:47:21.056Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:47:41.064Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:48:01.073Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:48:21.088Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:49:32.275Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:50:32.291Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:50:52.304Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:51:12.314Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:51:32.316Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:51:52.318Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:53:03.605Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:54:03.617Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:54:23.634Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:54:43.638Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:55:03.654Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:55:23.666Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:56:34.783Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:57:34.795Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:57:54.799Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:58:14.801Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:58:34.814Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T04:58:54.826Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:00:06.135Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:01:06.147Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:01:26.155Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:01:46.170Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:02:06.185Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:02:26.196Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:03:37.189Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:04:37.193Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:04:57.197Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:05:17.200Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:05:37.204Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:05:57.220Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:07:09.732Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:08:09.740Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:08:29.749Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:08:49.756Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:09:09.762Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:09:29.773Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:10:40.940Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:11:40.949Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:12:00.965Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:12:20.973Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:12:40.979Z"}
+{"level":"info","message":"QR Code received","timestamp":"2026-03-11T05:13:00.988Z"}
+{"level":"info","message":"Server is running on port 3000","timestamp":"2026-03-11T05:39:03.609Z"}
+{"level":"info","message":"Server is running on port 3000","timestamp":"2026-03-11T05:41:38.670Z"}
+{"level":"info","message":"GET /","timestamp":"2026-03-11T05:42:04.808Z"}
+{"level":"info","message":"GET /api/sessions","timestamp":"2026-03-11T05:42:06.003Z"}
+{"level":"warn","message":"Unauthorized access attempt from ::1","timestamp":"2026-03-11T05:42:06.007Z"}
+{"level":"info","message":"GET /favicon.ico","timestamp":"2026-03-11T05:42:06.093Z"}
+{"level":"info","message":"POST /api/sessions","timestamp":"2026-03-11T05:42:39.304Z"}
+{"level":"warn","message":"Unauthorized access attempt from ::1","timestamp":"2026-03-11T05:42:39.306Z"}
+{"level":"info","message":"GET /","timestamp":"2026-03-11T05:43:39.843Z"}
+{"level":"info","message":"GET /api/sessions","timestamp":"2026-03-11T05:43:40.411Z"}
+{"level":"info","message":"POST /api/sessions","timestamp":"2026-03-11T05:43:46.589Z"}
+{"level":"info","message":"Initializing session: admin","timestamp":"2026-03-11T05:43:46.601Z"}
+{"level":"info","message":"QR Code received for session admin","timestamp":"2026-03-11T05:44:13.516Z"}
+{"level":"info","message":"POST /api/sessions","timestamp":"2026-03-11T05:44:33.426Z"}
+{"level":"info","message":"Initializing session: ravi","timestamp":"2026-03-11T05:44:33.428Z"}
+{"level":"info","message":"QR Code received for session ravi","timestamp":"2026-03-11T05:45:00.582Z"}
+{"level":"info","message":"QR Code received for session admin","timestamp":"2026-03-11T05:45:13.453Z"}
+{"level":"info","message":"QR Code received for session admin","timestamp":"2026-03-11T05:45:33.467Z"}
+{"level":"info","message":"QR Code received for session admin","timestamp":"2026-03-11T05:45:53.469Z"}
+{"level":"info","message":"QR Code received for session ravi","timestamp":"2026-03-11T05:46:00.510Z"}
+{"level":"info","message":"QR Code received for session admin","timestamp":"2026-03-11T05:46:13.483Z"}
+{"level":"info","message":"QR Code received for session ravi","timestamp":"2026-03-11T05:46:20.519Z"}
+{"level":"info","message":"QR Code received for session admin","timestamp":"2026-03-11T05:46:33.485Z"}
+{"level":"info","message":"QR Code received for session ravi","timestamp":"2026-03-11T05:46:40.531Z"}
+{"level":"info","message":"QR Code received for session ravi","timestamp":"2026-03-11T05:47:00.538Z"}
+{"level":"info","message":"QR Code received for session ravi","timestamp":"2026-03-11T05:47:20.541Z"}
+{"level":"info","message":"QR Code received for session admin","timestamp":"2026-03-11T05:47:44.998Z"}
+{"level":"info","message":"QR Code received for session ravi","timestamp":"2026-03-11T05:48:32.306Z"}
+{"level":"info","message":"QR Code received for session admin","timestamp":"2026-03-11T05:48:45.005Z"}
+{"level":"info","message":"QR Code received for session admin","timestamp":"2026-03-11T05:49:05.011Z"}
+{"level":"info","message":"Server is running on port 3001","timestamp":"2026-03-11T06:15:55.371Z"}
+{"level":"info","message":"Restoring session: admin","timestamp":"2026-03-11T06:15:55.378Z"}
+{"level":"info","message":"Initializing session: admin","timestamp":"2026-03-11T06:15:55.380Z"}
+{"level":"info","message":"Restoring session: ravi","timestamp":"2026-03-11T06:15:55.383Z"}
+{"level":"info","message":"Initializing session: ravi","timestamp":"2026-03-11T06:15:55.384Z"}
+{"level":"error","message":"Failed to initialize client admin: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:15:55.659Z"}
+{"level":"error","message":"Failed to initialize client ravi: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:15:55.663Z"}
+{"level":"info","message":"Server is running on port 3001","timestamp":"2026-03-11T06:17:05.079Z"}
+{"level":"info","message":"Restoring session: admin","timestamp":"2026-03-11T06:17:05.087Z"}
+{"level":"info","message":"Initializing session: admin","timestamp":"2026-03-11T06:17:05.089Z"}
+{"level":"info","message":"Restoring session: ravi","timestamp":"2026-03-11T06:17:05.093Z"}
+{"level":"info","message":"Initializing session: ravi","timestamp":"2026-03-11T06:17:05.094Z"}
+{"level":"error","message":"Failed to initialize client admin: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:17:05.268Z"}
+{"level":"error","message":"Failed to initialize client ravi: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:17:05.272Z"}
+{"level":"info","message":"Server is running on port 3001","timestamp":"2026-03-11T06:17:36.281Z"}
+{"level":"info","message":"Restoring session: admin","timestamp":"2026-03-11T06:17:36.288Z"}
+{"level":"info","message":"Initializing session: admin","timestamp":"2026-03-11T06:17:36.290Z"}
+{"level":"info","message":"Restoring session: ravi","timestamp":"2026-03-11T06:17:36.293Z"}
+{"level":"info","message":"Initializing session: ravi","timestamp":"2026-03-11T06:17:36.294Z"}
+{"level":"error","message":"Failed to initialize client admin: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:17:36.543Z"}
+{"level":"error","message":"Failed to initialize client ravi: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:17:36.548Z"}
+{"level":"info","message":"Server is running on port 3001","timestamp":"2026-03-11T06:19:42.551Z"}
+{"level":"info","message":"Restoring session: admin","timestamp":"2026-03-11T06:19:42.558Z"}
+{"level":"info","message":"Initializing session: admin","timestamp":"2026-03-11T06:19:42.560Z"}
+{"level":"info","message":"Restoring session: ravi","timestamp":"2026-03-11T06:19:42.564Z"}
+{"level":"info","message":"Initializing session: ravi","timestamp":"2026-03-11T06:19:42.565Z"}
+{"level":"error","message":"Failed to initialize client admin: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:19:42.797Z"}
+{"level":"error","message":"Failed to initialize client ravi: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:19:42.805Z"}
+{"level":"info","message":"Server is running on port 3001","timestamp":"2026-03-11T06:21:32.278Z"}
+{"level":"info","message":"Restoring session: admin","timestamp":"2026-03-11T06:21:32.286Z"}
+{"level":"info","message":"Initializing session: admin","timestamp":"2026-03-11T06:21:32.288Z"}
+{"level":"info","message":"Restoring session: ravi","timestamp":"2026-03-11T06:21:32.291Z"}
+{"level":"info","message":"Initializing session: ravi","timestamp":"2026-03-11T06:21:32.292Z"}
+{"level":"error","message":"Failed to initialize client admin: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:21:32.508Z"}
+{"level":"error","message":"Failed to initialize client ravi: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:21:32.546Z"}
+{"level":"info","message":"Server is running on port 3001","timestamp":"2026-03-11T06:23:14.520Z"}
+{"level":"info","message":"Restoring session: admin","timestamp":"2026-03-11T06:23:14.527Z"}
+{"level":"info","message":"Initializing session: admin","timestamp":"2026-03-11T06:23:14.528Z"}
+{"level":"info","message":"Restoring session: ravi","timestamp":"2026-03-11T06:23:14.530Z"}
+{"level":"info","message":"Initializing session: ravi","timestamp":"2026-03-11T06:23:14.531Z"}
+{"level":"info","message":"QR Code received for session admin","timestamp":"2026-03-11T06:23:40.888Z"}
+{"level":"info","message":"Client admin initialized successfully","timestamp":"2026-03-11T06:23:40.910Z"}
+{"level":"info","message":"QR Code received for session ravi","timestamp":"2026-03-11T06:23:45.272Z"}
+{"level":"info","message":"Client ravi initialized successfully","timestamp":"2026-03-11T06:23:45.303Z"}
+{"level":"info","message":"Server is running on port 3001","timestamp":"2026-03-11T06:24:43.340Z"}
+{"level":"info","message":"Restoring session: admin","timestamp":"2026-03-11T06:24:43.350Z"}
+{"level":"info","message":"Initializing session: admin","timestamp":"2026-03-11T06:24:43.352Z"}
+{"level":"info","message":"Restoring session: ravi","timestamp":"2026-03-11T06:24:43.356Z"}
+{"level":"info","message":"Initializing session: ravi","timestamp":"2026-03-11T06:24:43.357Z"}
+{"level":"error","message":"Failed to initialize client admin: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:24:43.579Z"}
+{"level":"error","message":"Failed to initialize client ravi: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:24:43.583Z"}
+{"level":"info","message":"Server is running on port 3001","timestamp":"2026-03-11T06:26:17.267Z"}
+{"level":"info","message":"Restoring session: admin","timestamp":"2026-03-11T06:26:17.275Z"}
+{"level":"info","message":"Initializing session: admin","timestamp":"2026-03-11T06:26:17.277Z"}
+{"level":"info","message":"Restoring session: ravi","timestamp":"2026-03-11T06:26:17.280Z"}
+{"level":"info","message":"Initializing session: ravi","timestamp":"2026-03-11T06:26:17.281Z"}
+{"level":"error","message":"Failed to initialize client ravi: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:26:17.488Z"}
+{"level":"error","message":"Failed to initialize client admin: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:26:17.493Z"}
+{"level":"info","message":"Server is running on port 3001","timestamp":"2026-03-11T06:31:13.480Z"}
+{"level":"info","message":"Restoring session: admin","timestamp":"2026-03-11T06:31:13.488Z"}
+{"level":"info","message":"Initializing session: admin","timestamp":"2026-03-11T06:31:13.489Z"}
+{"level":"info","message":"Restoring session: ravi","timestamp":"2026-03-11T06:31:13.493Z"}
+{"level":"info","message":"Initializing session: ravi","timestamp":"2026-03-11T06:31:13.494Z"}
+{"level":"error","message":"Failed to initialize client ravi: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:31:13.765Z"}
+{"level":"error","message":"Failed to initialize client admin: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:31:13.769Z"}
+{"level":"info","message":"Server is running on port 3005","timestamp":"2026-03-11T06:33:30.087Z"}
+{"level":"info","message":"Restoring session: admin","timestamp":"2026-03-11T06:33:30.094Z"}
+{"level":"info","message":"Initializing session: admin","timestamp":"2026-03-11T06:33:30.095Z"}
+{"level":"info","message":"Restoring session: ravi","timestamp":"2026-03-11T06:33:30.099Z"}
+{"level":"info","message":"Initializing session: ravi","timestamp":"2026-03-11T06:33:30.099Z"}
+{"level":"error","message":"Failed to initialize client admin: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-admin. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:33:30.312Z"}
+{"level":"error","message":"Failed to initialize client ravi: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.","stack":"Error: The browser is already running for D:\\webjs umroh\\.wwebjs_auth\\session-ravi. Use a different `userDataDir` or stop the running browser first.\n    at ChromeLauncher.launch (D:\\webjs umroh\\node_modules\\puppeteer-core\\lib\\cjs\\puppeteer\\node\\BrowserLauncher.js:175:23)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async Client.initialize (D:\\webjs umroh\\node_modules\\whatsapp-web.js\\src\\Client.js:331:23)\n    at async WhatsAppClient.initSession (D:\\webjs umroh\\src\\services\\whatsappClient.js:82:13)","timestamp":"2026-03-11T06:33:30.343Z"}
