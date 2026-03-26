@@ -34,3 +34,12 @@ exports.getSessionStatus = async (req, res) => {
         res.status(500).json({ error: 'Failed to get session status' });
     }
 };
+exports.deleteSession = async (req, res) => {
+    const { sessionId } = req.params;
+    try {
+        await whatsapp.deleteSession(sessionId);
+        res.json({ message: `Session ${sessionId} deleted successfully.` });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to delete session' });
+    }
+};

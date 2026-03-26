@@ -83,6 +83,20 @@ function App() {
         }
     };
 
+    const deleteSession = async (sessionId) => {
+        if (!window.confirm(`Are you sure you want to logout session ${sessionId}?`)) return;
+        try {
+            await axios.delete(`${API_BASE}/sessions/${sessionId}`, {
+                headers: { 'x-api-key': API_KEY }
+            });
+            setSelectedSession(null);
+            fetchSessions();
+            setStatusMessage(`Session ${sessionId} deleted.`);
+        } catch (err) {
+            setStatusMessage('Failed to delete session');
+        }
+    };
+
     return (
         <div className="dashboard">
             <header>
@@ -139,7 +153,9 @@ function App() {
                         <div className="chat-interface card">
                             <div className="chat-header">
                                 <h2>Messaging: <span>{selectedSession.id}</span></h2>
-                                <button className="btn-danger"><Trash2 size={18} /> Logout</button>
+                                <button className="btn-danger" onClick={() => deleteSession(selectedSession.id)}>
+                                    <Trash2 size={18} /> Logout
+                                </button>
                             </div>
                             <div className="form-group">
                                 <label>Recipient Number</label>

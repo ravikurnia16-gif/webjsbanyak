@@ -118,12 +118,18 @@ class WhatsAppClient {
         }
     }
 
-    getAllSessions() {
-        const sessions = [];
-        for (let [id, client] of this.clients) {
-            sessions.push({ id });
+    async deleteSession(sessionId) {
+        const client = this.getClient(sessionId);
+        if (!client) return;
+
+        try {
+            await client.destroy();
+            this.clients.delete(sessionId);
+            logger.info(`Session ${sessionId} deleted successfully.`);
+        } catch (error) {
+            logger.error(`Error deleting session ${sessionId}:`, error);
+            throw error;
         }
-        return sessions;
     }
 }
 
