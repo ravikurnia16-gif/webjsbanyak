@@ -44,7 +44,10 @@ function App() {
                 return;
             }
             const sheetId = match[1];
-            const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+            const gidMatch = spreadsheetUrl.match(/gid=([0-9]+)/);
+            const gid = gidMatch ? gidMatch[1] : '0';
+            
+            const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`;
             const res = await axios.get(csvUrl);
             const rows = res.data.split('\n').map(r => r.split(',').map(c => c.replace(/^"|"$/g, '').trim()));
             const headers = rows[0];
@@ -563,7 +566,7 @@ function App() {
                                 <div className="qr-steps" style={{ marginTop: '1rem' }}>
                                     <div className="qr-step"><div className="step-num">1</div><div className="step-text">Buat Google Sheet, pastikan baris pertama adalah judul (Contoh: Nomor, Nama, Tagihan).</div></div>
                                     <div className="qr-step"><div className="step-num">2</div><div className="step-text">Klik <strong>Share</strong> (Bagikan) -&gt; Ubah Ke <strong>Anyone with link</strong> (Siapa saja yang memiliki link).</div></div>
-                                    <div className="qr-step"><div className="step-num">3</div><div className="step-text">Salin link dari browser dan tempelkan ke kolom input Spreadsheet URL di kiri.</div></div>
+                                    <div className="qr-step"><div className="step-num">3</div><div className="step-text">Buka <strong>tab/sheet</strong> yang diinginkan, salin link dari browser dan tempel ke kolom Spreadsheet URL.</div></div>
                                     <div className="qr-step"><div className="step-num">4</div><div className="step-text">Gunakan {'{Judul}'} di isi pesan untuk personalisasi (Contoh: {'{Nama}'}).</div></div>
                                 </div>
                                 <label className="form-label-new" style={{ marginTop: '2rem', display: 'block' }}>Tips Blast Aman</label>
