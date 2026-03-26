@@ -8,9 +8,9 @@ import {
 } from 'lucide-react';
 import './App.css';
 
-const SOCKET_URL = window.location.origin;
-const API_BASE = `${window.location.origin}/api`;
-const API_KEY = 'your_secret_api_key'; // Default, ideally from env
+const SOCKET_URL = '/';
+const API_BASE = '/api';
+const API_KEY = 'secret123'; // Matches .env API_KEY
 
 function App() {
     const [currentPage, setCurrentPage] = useState('dashboard');
@@ -85,8 +85,12 @@ function App() {
         }
 
         const dataToProcess = spreadsheetData.length > 0 ? spreadsheetData : bulkNumbers.split('\n').map(n => ({ nomor: n.trim() })).filter(d => d.nomor.length > 5);
-        if (dataToProcess.length === 0) return;
+        if (dataToProcess.length === 0) {
+            console.warn('No data to process');
+            return;
+        }
 
+        console.log('Starting Blast...', { session: selectedSession.id, count: dataToProcess.length, interval: bulkInterval });
         setIsBlasting(true);
         setBlastProgress({ current: 0, total: dataToProcess.length });
 
@@ -94,8 +98,12 @@ function App() {
             if (!isBlasting) break;
             const row = dataToProcess[i];
             const numField = Object.keys(row).find(k => k.toLowerCase().includes('nomor') || k.toLowerCase().includes('phone') || k.toLowerCase().includes('wa')) || Object.keys(row)[0];
-            const num = row[numField] || '';
-            if (num.length < 5) continue;
+            let num = (row[numField] || '').toString().replace(/\D/g, ''); // Clean non-digits
+            if (num.startsWith('0')) num = '62' + num.slice(1); // Auto convert 08xx to 628xx
+            if (num.length < 5) {
+                console.warn('Invalid number skip:', num);
+                continue;
+            }
 
             // Variable replacement
             let personalizedMsg = message;
@@ -104,14 +112,17 @@ function App() {
                 personalizedMsg = personalizedMsg.replace(regex, row[key] || '');
             });
 
+            console.log(`[${i+1}/${dataToProcess.length}] Sending to ${num}...`);
             try {
-                await axios.post(`${API_BASE}/send-message`, {
+                const response = await axios.post(`${API_BASE}/send-message`, {
                     sessionId: selectedSession.id,
                     number: num,
-                    message: personalizedMsg,
-                    apikey: API_KEY
+                    message: personalizedMsg
+                }, {
+                    headers: { 'x-api-key': API_KEY }
                 });
                 
+                console.log(`Success ${num}:`, response.data);
                 setLogs(prev => [{
                     id: Date.now(),
                     dir: 'out',
@@ -123,7 +134,9 @@ function App() {
                     status: 'Sent'
                 }, ...prev].slice(0, 100));
             } catch (err) {
-                console.error(`Failed to send to ${num}`, err);
+                const errorDetail = err.response?.data?.error || err.message;
+                console.error(`Failed ${num}:`, errorDetail);
+                setStatusMessage(`Gagal kirim ke ${num}: ${errorDetail}`);
             }
             
             setBlastProgress(prev => ({ ...prev, current: i + 1 }));
@@ -226,8 +239,9 @@ function App() {
             await axios.post(`${API_BASE}/send-message`, {
                 sessionId: selectedSession.id,
                 number: phoneNumber,
-                message: message,
-                apikey: API_KEY
+                message: message
+            }, {
+                headers: { 'x-api-key': API_KEY }
             });
             setLogs(prev => [{
                 id: Date.now(),
