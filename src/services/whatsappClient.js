@@ -20,6 +20,12 @@ class WhatsAppClient {
         logger.info(`Initializing session: ${sessionId} with Chromium: ${process.env.PUPPETEER_EXECUTABLE_PATH || 'default'}`);
         const client = new Client({
             authStrategy: new LocalAuth({ clientId: sessionId }),
+            authTimeoutMs: 60000,
+            qrMaxRetries: 5,
+            webVersionCache: {
+                type: 'remote',
+                remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
+            },
             puppeteer: {
                 executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
                 headless: true,
@@ -31,7 +37,13 @@ class WhatsAppClient {
                     '--no-first-run',
                     '--no-zygote',
                     '--single-process',
-                    '--disable-gpu'
+                    '--disable-gpu',
+                    '--disable-canvas-aa',
+                    '--disable-2d-canvas-clip-aa',
+                    '--disable-gl-drawing-for-tests',
+                    '--disable-dev-db-utils',
+                    '--mute-audio',
+                    '--no-default-browser-check'
                 ]
             }
         });
