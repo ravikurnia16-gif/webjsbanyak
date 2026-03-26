@@ -8,9 +8,9 @@ import {
 } from 'lucide-react';
 import './App.css';
 
-const SOCKET_URL = '/';
-const API_BASE = '/api';
-const DEFAULT_API_KEY = 'secret123';
+const SOCKET_URL = window.location.origin;
+const API_BASE = `${window.location.origin}/api`;
+const API_KEY = 'your_secret_api_key'; // Default, ideally from env
 
 function App() {
     const [currentPage, setCurrentPage] = useState('dashboard');
@@ -18,7 +18,6 @@ function App() {
     const [newSessionId, setNewSessionId] = useState('');
     const [isInitializing, setIsInitializing] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
-    const [apiKey, setApiKey] = useState(localStorage.getItem('wa_api_key') || DEFAULT_API_KEY);
     const [activeQr, setActiveQr] = useState(null);
     const [selectedSession, setSelectedSession] = useState(null);
     const [message, setMessage] = useState('');
@@ -27,153 +26,19 @@ function App() {
     const [searchQuery, setSearchQuery] = useState('');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isQrModalOpen, setIsQrModalOpen] = useState(false);
-    const [bulkNumbers, setBulkNumbers] = useState('');
-    const [spreadsheetUrl, setSpreadsheetUrl] = useState('');
-    const [spreadsheetData, setSpreadsheetData] = useState([]);
-    const [bulkInterval, setBulkInterval] = useState(5);
-    const [isBlasting, setIsBlasting] = useState(false);
-    
-    useEffect(() => {
-        localStorage.setItem('wa_api_key', apiKey);
-    }, [apiKey]);
-    const [blastProgress, setBlastProgress] = useState({ current: 0, total: 0 });
     const [logs, setLogs] = useState([
         { id: 1, dir: 'out', session: 'system', to: '62812xxxxxx', text: 'Sistem siap digunakan.', type: 'text', time: new Date().toLocaleTimeString(), status: 'Sent' }
     ]);
 
-    const handleSpreadsheetFetch = async () => {
-        try {
-            const match = spreadsheetUrl.match(/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-            if (!match) {
-                alert('URL Spreadsheet tidak valid! Pastikan link dishare "Anyone with link".');
-                return;
-            }
-            const sheetId = match[1];
-            const gidMatch = spreadsheetUrl.match(/gid=([0-9]+)/);
-            const gid = gidMatch ? gidMatch[1] : '0';
-            
-            const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=${gid}`;
-            const res = await axios.get(csvUrl);
-            const rows = res.data.split('\n').map(r => r.split(',').map(c => c.replace(/^"|"$/g, '').trim()));
-            const headers = rows[0];
-            const data = rows.slice(1).map(row => {
-                const obj = {};
-                headers.forEach((h, i) => obj[h] = row[i]);
-                return obj;
-            }).filter(d => Object.values(d).some(v => v));
-            setSpreadsheetData(data);
-            const nums = data.map(d => Object.values(d)[0]).join('\n'); // Assume first column is number if not specified
-            setBulkNumbers(nums);
-            setStatusMessage(`Berhasil memuat ${data.length} data dari Spreadsheet!`);
-            setTimeout(() => setStatusMessage(''), 3000);
-        } catch (err) {
-            alert('Gagal mengambil data. Pastikan Spreadsheet "Publish to the web" atau "Anyone with the link can view".');
-        }
-    };
-
-    const handleImport = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            const text = event.target.result;
-            const cleaned = text.split(/[\n,;]/).map(n => n.trim()).filter(n => n.length > 5).join('\n');
-            setBulkNumbers(prev => prev ? prev + '\n' + cleaned : cleaned);
-        };
-        reader.readAsText(file);
-    };
-
-    const sendBulkMessages = async () => {
-        if (!selectedSession || (!bulkNumbers && spreadsheetData.length === 0) || !message) {
-            alert('Pilih Sesi, masukkan Data, dan isi Pesan dahulu!');
-            return;
-        }
-
-        const dataToProcess = spreadsheetData.length > 0 ? spreadsheetData : bulkNumbers.split('\n').map(n => ({ nomor: n.trim() })).filter(d => d.nomor.length > 5);
-        if (dataToProcess.length === 0) {
-            console.warn('No data to process');
-            return;
-        }
-
-        console.log('Starting Blast...', { session: selectedSession.id, count: dataToProcess.length, interval: bulkInterval });
-        setIsBlasting(true);
-        setBlastProgress({ current: 0, total: dataToProcess.length });
-
-        for (let i = 0; i < dataToProcess.length; i++) {
-            if (!isBlasting) break;
-            const row = dataToProcess[i];
-            const numField = Object.keys(row).find(k => k.toLowerCase().includes('nomor') || k.toLowerCase().includes('phone') || k.toLowerCase().includes('wa')) || Object.keys(row)[0];
-            let num = (row[numField] || '').toString().replace(/\D/g, ''); // Clean non-digits
-            if (num.startsWith('0')) num = '62' + num.slice(1); // Auto convert 08xx to 628xx
-            if (num.length < 5) {
-                console.warn('Invalid number skip:', num);
-                continue;
-            }
-
-            // Variable replacement
-            let personalizedMsg = message;
-            Object.keys(row).forEach(key => {
-                const regex = new RegExp(`{${key}}`, 'gi');
-                personalizedMsg = personalizedMsg.replace(regex, row[key] || '');
-            });
-
-            console.log(`[${i+1}/${dataToProcess.length}] Sending to ${num}...`);
-            try {
-                const response = await axios.post(`${API_BASE}/send-message`, {
-                    sessionId: selectedSession.id,
-                    number: num,
-                    message: personalizedMsg
-                }, {
-                    headers: { 'x-api-key': apiKey }
-                });
-                
-                console.log(`Success ${num}:`, response.data);
-                setLogs(prev => [{
-                    id: Date.now(),
-                    dir: 'out',
-                    session: selectedSession.id,
-                    to: num,
-                    text: personalizedMsg,
-                    type: 'text',
-                    time: new Date().toLocaleTimeString(),
-                    status: 'Sent'
-                }, ...prev].slice(0, 100));
-            } catch (err) {
-                const errorDetail = err.response?.data?.error || err.message;
-                console.error(`Failed ${num}:`, errorDetail);
-                setStatusMessage(`Gagal kirim ke ${num}: ${errorDetail}`);
-            }
-            
-            setBlastProgress(prev => ({ ...prev, current: i + 1 }));
-            if (i < dataToProcess.length - 1) {
-                await new Promise(resolve => setTimeout(resolve, bulkInterval * 1000));
-            }
-        }
-        
-        setIsBlasting(false);
-        setStatusMessage(`Blast Selesai! ${dataToProcess.length} data diproses.`);
-        setTimeout(() => setStatusMessage(''), 5000);
-    };
-
     useEffect(() => {
-        const socket = io(window.location.origin, { transports: ['websocket'] });
-        
-        socket.on('connect', () => {
-            console.log('Socket.io connected:', socket.id);
-            setStatusMessage('Dashboard connected to server.');
-            setTimeout(() => setStatusMessage(''), 2000);
-        });
-
-        socket.on('connect_error', (err) => {
-            console.error('Socket.io error:', err.message);
-            setStatusMessage('⚠️ Real-time connection failed. Please refresh.');
-        });
+        const socket = io(SOCKET_URL, { transports: ['websocket'] });
 
         socket.on('qr', ({ sessionId, qr }) => {
-            console.log('QR Code received:', sessionId);
             setIsInitializing(false);
             setActiveQr({ sessionId, qr });
-            setIsQrModalOpen(true);
+            if (currentPage === 'dashboard' || currentPage === 'sessions') {
+                setIsQrModalOpen(true);
+            }
         });
 
         socket.on('ready', ({ sessionId }) => {
@@ -215,7 +80,7 @@ function App() {
     const fetchSessions = async () => {
         try {
             const res = await axios.get(`${API_BASE}/sessions`, {
-                headers: { 'x-api-key': apiKey }
+                headers: { 'x-api-key': API_KEY }
             });
             setSessions(res.data);
             return res.data;
@@ -235,20 +100,16 @@ function App() {
         }
 
         setIsInitializing(true);
-        setStatusMessage('🔄 Sedang menghubungi server...');
+        setIsAddModalOpen(false);
         try {
-            const response = await axios.post(`${API_BASE}/sessions`, { sessionId: newSessionId }, {
-                headers: { 'x-api-key': apiKey }
+            await axios.post(`${API_BASE}/sessions`, { sessionId: newSessionId }, {
+                headers: { 'x-api-key': API_KEY }
             });
             setNewSessionId('');
-            setStatusMessage('📡 Server Terhubung! Menunggu WhatsApp menyiapkan QR Code (10-30 detik)...');
-            console.log('Session creation response:', response.data);
+            setStatusMessage('Initializing... Tunggu sebentar untuk QR Code.');
         } catch (err) {
             setIsInitializing(false);
-            const errMsg = err.response?.data?.error || err.message;
-            console.error('Create session failed:', err);
-            setStatusMessage(`❌ Gagal: ${errMsg}`);
-            alert(`Gagal Membuat Sesi!\n\nDetail: ${errMsg}\n\nPastikan server sudah berjalan dan Kunci API benar.`);
+            setStatusMessage('Gagal membuat sesi');
         }
     };
 
@@ -258,9 +119,8 @@ function App() {
             await axios.post(`${API_BASE}/send-message`, {
                 sessionId: selectedSession.id,
                 number: phoneNumber,
-                message: message
-            }, {
-                headers: { 'x-api-key': apiKey }
+                message: message,
+                apikey: API_KEY
             });
             setLogs(prev => [{
                 id: Date.now(),
@@ -493,7 +353,7 @@ function App() {
                         </div>
 
                         <div className="sec-header" style={{ marginTop: '1rem' }}>
-                            <div className="sec-title">History Pesan Terkirim (Live)</div>
+                            <div className="sec-title">History Pesan (Live)</div>
                         </div>
                         <div className="table-wrap">
                             <table className="log-table">
@@ -508,9 +368,9 @@ function App() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {logs.filter(l => l.dir === 'out').map(log => (
+                                    {logs.map(log => (
                                         <tr key={log.id}>
-                                            <td><span className="log-dir dir-out">▶ OUT</span></td>
+                                            <td><span className={`log-dir ${log.dir === 'in' ? 'dir-in' : 'dir-out'}`}>{log.dir === 'in' ? '◀ IN' : '▶ OUT'}</span></td>
                                             <td><span className="log-session-badge">{log.session}</span></td>
                                             <td style={{ fontFamily: 'var(--mono)', fontSize: '11px' }}>{log.to}</td>
                                             <td className="log-msg" title={log.text}>{log.text}</td>
@@ -520,94 +380,6 @@ function App() {
                                     ))}
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                );
-            case 'blast':
-                return (
-                    <div className="page-area active">
-                        <div className="sec-header">
-                            <div className="sec-title">Kirim Pesan Massal (Blast)</div>
-                        </div>
-                        <div className="stats-row" style={{ gridTemplateColumns: '1.5fr 1fr' }}>
-                            <div className="stat-card" style={{ textAlign: 'left' }}>
-                                <div className="form-group-new">
-                                    <label className="form-label-new">Pilih Akun Sesi</label>
-                                    <select className="form-input-new" value={selectedSession?.id || ''} onChange={e => setSelectedSession(sessions.find(s => s.id === e.target.value))}>
-                                        <option value="">-- Pilih Sesi --</option>
-                                        {sessions.map(s => <option key={s.id} value={s.id}>{s.id} ({s.status})</option>)}
-                                    </select>
-                                </div>
-                                
-                                <div className="form-group-new" style={{ marginTop: '1rem' }}>
-                                    <label className="form-label-new">🔗 Google Spreadsheet URL (Otomatis)</label>
-                                    <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-                                        <input className="form-input-new" style={{ flex: 1 }} placeholder="https://docs.google.com/spreadsheets/d/..." value={spreadsheetUrl} onChange={e => setSpreadsheetUrl(e.target.value)} />
-                                        <button className="btn btn-outline btn-sm" onClick={handleSpreadsheetFetch}>Sinkronkan</button>
-                                    </div>
-                                    {spreadsheetData.length > 0 && (
-                                        <div style={{ fontSize: '10px', color: 'var(--wa)', padding: '6px', background: 'var(--surface2)', borderRadius: '6px', marginTop: '8px', border: '1px solid var(--border)' }}>
-                                            <strong>Variabel Tersedia:</strong> {Object.keys(spreadsheetData[0]).map(k => `{${k}}`).join(', ')}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="form-group-new" style={{ marginTop: '1rem' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <label className="form-label-new">Daftar Nomor (Dihasilkan Otomatis)</label>
-                                        <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer', padding: '2px 8px' }}>
-                                            📥 Import .txt / .csv
-                                            <input type="file" hidden accept=".txt,.csv" onChange={handleImport} />
-                                        </label>
-                                    </div>
-                                    <textarea className="form-input-new" style={{ height: '100px', resize: 'none', marginTop: '4px' }} placeholder="628123456789&#10;628121112223" value={bulkNumbers} onChange={e => setBulkNumbers(e.target.value)} />
-                                </div>
-
-                                <div className="form-group-new" style={{ marginTop: '1rem' }}>
-                                    <label className="form-label-new">Isi Pesan (Gunakan {'{Variabel}'} dari Header)</label>
-                                    <textarea className="form-input-new" style={{ height: '100px', resize: 'none' }} placeholder="Contoh: Halo {Nama}, tagihan Anda sebesar {Jumlah}..." value={message} onChange={e => setMessage(e.target.value)} />
-                                </div>
-
-                                <div className="form-grid" style={{ marginTop: '1rem' }}>
-                                    <div className="form-group-new">
-                                        <label className="form-label-new">Jeda Interval (Detik)</label>
-                                        <input className="form-input-new" type="number" value={bulkInterval} onChange={e => setBulkInterval(e.target.value)} min="1" />
-                                    </div>
-                                    <div className="form-group-new">
-                                        <label className="form-label-new" style={{ visibility: 'hidden' }}>Action</label>
-                                        <button className="btn btn-primary" onClick={sendBulkMessages} disabled={isBlasting || !selectedSession}>
-                                            {isBlasting ? <Loader2 className="spinner" size={16} /> : <Send size={16} />} 🚀 Mulai Blast Massal
-                                        </button>
-                                    </div>
-                                </div>
-                                {isBlasting && (
-                                    <div style={{ marginTop: '1.5rem' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '5px' }}>
-                                            <span>Progress: {blastProgress.current} / {blastProgress.total}</span>
-                                            <span>{Math.round((blastProgress.current / blastProgress.total) * 100)}%</span>
-                                        </div>
-                                        <div style={{ height: '6px', background: 'var(--surface2)', borderRadius: '3px', overflow: 'hidden' }}>
-                                            <div style={{ height: '100%', background: 'var(--wa)', width: `${(blastProgress.current / blastProgress.total) * 100}%`, transition: 'width 0.3s' }}></div>
-                                        </div>
-                                        <button className="btn btn-danger btn-sm" style={{ marginTop: '10px', width: '100%' }} onClick={() => setIsBlasting(false)}>Hentikan Pengiriman</button>
-                                    </div>
-                                )}
-                                {statusMessage && <p style={{ fontSize: '12px', color: 'var(--wa)', marginTop: '0.5rem' }}>{statusMessage}</p>}
-                            </div>
-                            <div className="stat-card" style={{ textAlign: 'left' }}>
-                                <label className="form-label-new">Langkah Koneksi Spreadsheet</label>
-                                <div className="qr-steps" style={{ marginTop: '1rem' }}>
-                                    <div className="qr-step"><div className="step-num">1</div><div className="step-text">Buat Google Sheet, pastikan baris pertama adalah judul (Contoh: Nomor, Nama, Tagihan).</div></div>
-                                    <div className="qr-step"><div className="step-num">2</div><div className="step-text">Klik <strong>Share</strong> (Bagikan) -&gt; Ubah Ke <strong>Anyone with link</strong> (Siapa saja yang memiliki link).</div></div>
-                                    <div className="qr-step"><div className="step-num">3</div><div className="step-text">Buka <strong>tab/sheet</strong> yang diinginkan, salin link dari browser dan tempel ke kolom Spreadsheet URL.</div></div>
-                                    <div className="qr-step"><div className="step-num">4</div><div className="step-text">Gunakan {'{Judul}'} di isi pesan untuk personalisasi (Contoh: {'{Nama}'}).</div></div>
-                                </div>
-                                <label className="form-label-new" style={{ marginTop: '2rem', display: 'block' }}>Tips Blast Aman</label>
-                                <div className="qr-steps" style={{ marginTop: '1rem' }}>
-                                    <div className="qr-step"><div className="step-num">✓</div><div className="step-text">Gunakan interval minimal 5-10 detik untuk menghindari ban.</div></div>
-                                    <div className="qr-step"><div className="step-num">✓</div><div className="step-text">Kirim pesan yang relevan dan personal agar tidak dianggap spam.</div></div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 );
@@ -642,64 +414,67 @@ function App() {
                 return (
                     <div className="page-area active">
                         <div className="sec-header">
-                            <div className="sec-title">Panduan Integrasi (POST Method)</div>
+                            <div className="sec-title">Panduan Langkah Integrasi (POST Method)</div>
                         </div>
-                        <div className="qr-steps" style={{ gap: '14px', display: 'flex', flexDirection: 'column' }}>
-                            <div className="stat-card" style={{ textAlign: 'left', animationDelay: '0.05s', borderLeft: '4px solid var(--wa)' }}>
+                        
+                        <div className="stat-card" style={{ textAlign: 'left', animation: 'fadeUp .3s ease both' }}>
+                            <div className="qr-steps" style={{ gap: '24px' }}>
                                 <div className="qr-step">
                                     <div className="step-num">1</div>
-                                    <div style={{ flex: 1 }}>
-                                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--wa)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            Inisialisasi Sesi <span className="api-method method-post">POST</span>
-                                        </div>
-                                        <div style={{ fontSize: '12px', color: 'var(--muted2)', marginTop: '6px' }}>Kirimkan nama sesi yang unik (tanpa spasi) untuk memulai proses koneksi.</div>
-                                        <div className="code-block" style={{ marginTop: '12px' }}>
-{`POST ${API_BASE}/sessions
-{
-  "sessionId": "my-bot-account"
-}`}
-                                        </div>
+                                    <div className="step-text">
+                                        <strong style={{ color: 'var(--text)', fontSize: '14px' }}>Buat Sesi WhatsApp</strong><br/>
+                                        Masuk ke menu <strong>Sessions</strong> dan klik <strong>Tambah Session</strong>. Berikan nama unik (contoh: <code>sesi-utama</code>).
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="stat-card" style={{ textAlign: 'left', animationDelay: '0.15s', borderLeft: '4px solid var(--blue)' }}>
                                 <div className="qr-step">
                                     <div className="step-num">2</div>
-                                    <div style={{ flex: 1 }}>
-                                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--blue)' }}>Hubungkan Perangkat (Scan QR)</div>
-                                        <div style={{ fontSize: '12px', color: 'var(--muted2)', marginTop: '6px' }}>Pantau event 'qr' melalui Socket.io atau dashboard ini, lalu scan menggunakan aplikasi WhatsApp di HP Anda.</div>
+                                    <div className="step-text">
+                                        <strong style={{ color: 'var(--text)', fontSize: '14px' }}>Hubungkan Perangkat (Scan QR)</strong><br/>
+                                        Klik ikon QR pada sesi yang baru dibuat. Buka WhatsApp di HP Anda &gt; Perangkat Tertaut &gt; Tautkan Perangkat.
                                     </div>
                                 </div>
-                            </div>
-
-                            <div className="stat-card" style={{ textAlign: 'left', animationDelay: '0.25s', borderLeft: '4px solid var(--wa)' }}>
                                 <div className="qr-step">
                                     <div className="step-num">3</div>
-                                    <div style={{ flex: 1 }}>
-                                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--wa)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            Kirim Pesan Otomatis <span className="api-method method-post">POST</span>
-                                        </div>
-                                        <div style={{ fontSize: '12px', color: 'var(--muted2)', marginTop: '6px' }}>Setelah status 'CONNECTED', sistem Anda siap mengirim pesan secara massal atau terjadwal.</div>
-                                        <div className="code-block" style={{ marginTop: '12px' }}>
-{`POST ${API_BASE}/send-message
-{
-  "sessionId": "my-bot-account",
-  "number": "628123456789",
-  "message": "Halo! Ini pesan otomatis via API.",
-  "apikey": "${API_KEY}"
-}`}
-                                        </div>
+                                    <div className="step-text">
+                                        <strong style={{ color: 'var(--text)', fontSize: '14px' }}>Integrasi API (Method: POST)</strong><br/>
+                                        Gunakan endpoint di bawah ini untuk mengirim pesan dari website Anda. Pastikan menggunakan <code>method: POST</code> dan <code>Content-Type: application/json</code>.
+                                    </div>
+                                </div>
+                                <div className="code-example" style={{ marginLeft: '32px', marginTop: '-10px' }}>
+                                    <div className="code-block">
+{`// Contoh Integrasi JavaScript (Fetch)
+fetch('${API_BASE}/send-message', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': '${API_KEY}'
+  },
+  body: JSON.stringify({
+    sessionId: 'sesi-utama', // ID yang Anda buat
+    number: '628123456789',
+    message: 'Halo, ini pesan dari website!'
+  })
+})`}
+                                    </div>
+                                </div>
+                                <div className="qr-step">
+                                    <div className="step-num">4</div>
+                                    <div className="step-text">
+                                        <strong style={{ color: 'var(--text)', fontSize: '14px' }}>Keamanan API Key</strong><br/>
+                                        Simpan <code>x-api-key</code> Anda dengan aman di server backend website Anda. Jangan tampilkan secara publik di frontend website Anda.
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="stat-card" style={{ textAlign: 'left', animationDelay: '0.35s', borderLeft: '4px solid var(--yellow)' }}>
-                                <div className="qr-step">
-                                    <div className="step-num" style={{ background: 'var(--yellow)' }}>4</div>
-                                    <div style={{ flex: 1 }}>
-                                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--yellow)' }}>Monitoring & Logs</div>
-                                        <div style={{ fontSize: '12px', color: 'var(--muted2)', marginTop: '6px' }}>Lihat menu 'Messages' di dashboard untuk memantau apakah pesan terkirim atau gagal secara real-time.</div>
+                        </div>
+                        
+                        <div className="info-box" style={{ background: 'rgba(37, 211, 102, 0.05)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--wa)', marginTop: '10px' }}>
+                            <div style={{ display: 'flex', gap: '12px' }}>
+                                <div style={{ color: 'var(--wa)', fontSize: '20px' }}><CheckCircle size={24}/></div>
+                                <div>
+                                    <div style={{ color: 'var(--text)', fontWeight: 700, marginBottom: '4px' }}>Tips Sukses</div>
+                                    <div style={{ fontSize: '12px', color: 'var(--muted2)', lineHeight: '1.6' }}>
+                                        Gunakan format nomor internasional tanpa tanda plus (contoh: 628...). <br/>
+                                        Sistem akan otomatis me-refresh status koneksi setiap kali Anda membuka dashboard ini.
                                     </div>
                                 </div>
                             </div>
@@ -718,43 +493,18 @@ function App() {
                                 <tbody>
                                     <tr><td><span className="api-method method-get">GET</span></td><td style={{ fontFamily: 'var(--mono)' }}>/api/sessions</td><td>List all active sessions</td></tr>
                                     <tr><td><span className="api-method method-post">POST</span></td><td style={{ fontFamily: 'var(--mono)' }}>/api/send-message</td><td>Send WhatsApp Message</td></tr>
-                                    <tr><td><span className="api-method method-get">GET</span></td><td style={{ fontFamily: 'var(--mono)' }}>/api/send</td><td>Direct Send via URL Query</td></tr>
+                                    <tr><td><span className="api-method method-get">GET</span></td><td style={{ fontFamily: 'var(--mono)' }}>/api/send</td><td>Send via URL Query (GET)</td></tr>
                                 </tbody>
                             </table>
                         </div>
                         <div className="code-example">
-                            <div style={{ fontWeight: 700, fontSize: '13px', marginBottom: '12px' }}>Quick Integration (GET Method)</div>
-                            <div className="code-block" style={{ wordBreak: 'break-all' }}>
-                                {`${window.location.origin}/api/send?number=628xxx&message=Halo&apikey=${API_KEY}`}
-                            </div>
-                        </div>
-                    </div>
-                );
-            case 'settings':
-                return (
-                    <div className="page-area active">
-                        <div className="sec-header">
-                            <div className="sec-title">Koneksi & Keamanan</div>
-                        </div>
-                        <div className="form-grid" style={{ maxWidth: '600px' }}>
-                            <div className="form-group-new full">
-                                <label className="form-label-new">API Key (Kunci Rahasia)</label>
-                                <input 
-                                    className="form-input-new" 
-                                    type="password" 
-                                    value={apiKey} 
-                                    onChange={e => setApiKey(e.target.value)} 
-                                    placeholder="Masukkan Kunci API (Default: secret123)"
-                                />
-                                <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '8px' }}>
-                                    💡 Pastikan kunci ini sama dengan <code>API_KEY</code> di server (Easypanel). 
-                                    Kunci saat ini: <code>{apiKey}</code>
-                                </div>
-                            </div>
-                            <div style={{ marginTop: '20px' }}>
-                                <button className="btn btn-primary" onClick={() => { fetchSessions(); setStatusMessage('✅ Konfigurasi Disimpan!'); }}>
-                                    Tes & Simpan Koneksi
-                                </button>
+                            <div style={{ fontWeight: 700, fontSize: '13px', marginBottom: '12px' }}>Example: Integration (JavaScript)</div>
+                            <div className="code-block">
+                                {`// Kirim Pesan via API
+fetch('${API_BASE}/send', {
+  method: 'GET',
+  headers: { 'x-api-key': '${API_KEY}' }
+})`}
                             </div>
                         </div>
                     </div>
@@ -775,11 +525,6 @@ function App() {
                     <div className="sb-logo-badge">v1.4</div>
                 </div>
 
-                <div className={`sb-item ${currentPage === 'settings' ? 'active' : ''}`} onClick={() => showPage('settings')}>
-                    <Settings className="sb-icon" size={18} /> Settings
-                    <div className="sb-dot"></div>
-                </div>
-
                 <div className="sb-section">Main Menu</div>
                 <div className={`sb-item ${currentPage === 'dashboard' ? 'active' : ''}`} onClick={() => showPage('dashboard')}>
                     <LayoutDashboard className="sb-icon" size={18} /> Dashboard
@@ -791,16 +536,13 @@ function App() {
                     <span className="sb-count">{sessions.length}</span>
                     <div className="sb-dot"></div>
                 </div>
-                <div className={`sb-item ${currentPage === 'blast' ? 'active' : ''}`} onClick={() => showPage('blast')}>
-                    <Send className="sb-icon" size={18} /> Kirim Pesan
-                    <div className="sb-dot"></div>
-                </div>
                 <div className={`sb-item ${currentPage === 'messages' ? 'active' : ''}`} onClick={() => showPage('messages')}>
-                    <MessageSquare className="sb-icon" size={18} /> Riwayat Pesan
+                    <MessageSquare className="sb-icon" size={18} /> Messenging
                     <div className="sb-dot"></div>
                 </div>
+
                 <div className={`sb-item ${currentPage === 'steps' ? 'active' : ''}`} onClick={() => showPage('steps')}>
-                    <ListChecks className="sb-icon" size={18} /> Langkah Integrasi
+                    <ListChecks className="sb-icon" size={18} /> Langkah
                     <div className="sb-dot"></div>
                 </div>
 
@@ -836,16 +578,6 @@ function App() {
                         <button className="btn btn-primary" onClick={() => setIsAddModalOpen(true)}>＋ Tambah Session</button>
                     </div>
                 </div>
-
-                {/* Global Status Banner */}
-                {(statusMessage || isInitializing) && (
-                    <div className={`status-banner ${statusMessage.includes('❌') ? 'error' : ''}`}>
-                        <div className="sb-inner">
-                            {isInitializing && <Loader2 className="spinner" size={16} />}
-                            <span>{statusMessage || '🔄 Sedang Menyiapkan WhatsApp...'}</span>
-                        </div>
-                    </div>
-                )}
 
                 <div className="content-area">
                     {renderPage()}
