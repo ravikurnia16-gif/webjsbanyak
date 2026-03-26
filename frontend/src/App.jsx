@@ -163,7 +163,7 @@ function App() {
         return {
             total: sessions.length,
             connected: connectedCount,
-            messages: logs.length + 1247
+            messages: logs.length
         };
     }, [sessions, logs]);
 
