@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
-import { Plus, Wifi, WifiOff, MessageSquare, Trash2, Send, QrCode, Loader2, Code, Copy, CheckCircle } from 'lucide-react';
+import { Plus, Wifi, WifiOff, MessageSquare, Trash2, Send, QrCode, Loader2, Code, Copy, CheckCircle, ListChecks, ArrowDown } from 'lucide-react';
 import './App.css';
 
 const SOCKET_URL = window.location.origin;
@@ -147,6 +147,32 @@ function App() {
                             </div>
                         ))}
                         {sessions.length === 0 && <p className="empty-state">No sessions found.</p>}
+                    </div>
+                    <div className="steps-container">
+                        <h2>Langkah Penggunaan</h2>
+                        <div className="step-item">
+                            <div className="step-number">1</div>
+                            <div className="step-content">
+                                <strong>Buat Sesi</strong>
+                                <p>Masukkan nama & klik Add</p>
+                            </div>
+                        </div>
+                        <div className="step-connector"></div>
+                        <div className="step-item">
+                            <div className="step-number">2</div>
+                            <div className="step-content">
+                                <strong>Scan QR</strong>
+                                <p>Scan lewat WhatsApp HP</p>
+                            </div>
+                        </div>
+                        <div className="step-connector"></div>
+                        <div className="step-item">
+                            <div className="step-number">3</div>
+                            <div className="step-content">
+                                <strong>Kirim Pesan</strong>
+                                <p>Gunakan API / Dashboard</p>
+                            </div>
+                        </div>
                     </div>
                 </aside>
 
