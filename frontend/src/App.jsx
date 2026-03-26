@@ -158,11 +158,14 @@ function App() {
         return sessions.filter(s => s.id.toLowerCase().includes(searchQuery.toLowerCase()));
     }, [sessions, searchQuery]);
 
-    const stats = useMemo(() => ({
-        total: sessions.length,
-        connected: sessions.length, // Simple mock for now
-        messages: logs.length + 1247
-    }), [sessions, logs]);
+    const stats = useMemo(() => {
+        const connectedCount = sessions.filter(s => s.status === 'CONNECTED' || s.status === 'AUTHENTICATED').length;
+        return {
+            total: sessions.length,
+            connected: connectedCount,
+            messages: logs.length + 1247
+        };
+    }, [sessions, logs]);
 
     const renderPage = () => {
         switch(currentPage) {
@@ -173,11 +176,11 @@ function App() {
                             <div className="stat-card">
                                 <div className="stat-top">
                                     <span className="stat-icon">📱</span>
-                                    <span className="stat-badge badge-up">Total</span>
+                                    <span className="stat-badge badge-up">Account</span>
                                 </div>
                                 <div className="stat-num">{stats.total}</div>
                                 <div className="stat-label">Total Sessions</div>
-                                <div className="stat-sub">{stats.connected} connected</div>
+                                <div className="stat-sub">{stats.connected} Terkoneksi</div>
                             </div>
                             <div className="stat-card">
                                 <div className="stat-top">
@@ -191,16 +194,16 @@ function App() {
                             <div className="stat-card">
                                 <div className="stat-top">
                                     <span className="stat-icon">⚡</span>
-                                    <span className="stat-badge badge-up">Uptime</span>
+                                    <span className="stat-badge badge-up">Server</span>
                                 </div>
                                 <div className="stat-num">99%</div>
                                 <div className="stat-label">Sla Reliability</div>
-                                <div className="stat-sub">Server Status: Online</div>
+                                <div className="stat-sub">Gateway: Online</div>
                             </div>
                             <div className="stat-card">
                                 <div className="stat-top">
                                     <span className="stat-icon">🔐</span>
-                                    <span className="stat-badge badge-info">Secure</span>
+                                    <span className="stat-badge badge-info">Privacy</span>
                                 </div>
                                 <div className="stat-num">AES</div>
                                 <div className="stat-label">Encryption</div>
@@ -214,25 +217,31 @@ function App() {
                         </div>
 
                         <div className="sessions-grid">
-                            {filteredSessions.slice(0, 3).map(session => (
-                                <div key={session.id} className={`session-card ${selectedSession?.id === session.id ? 'selected' : ''}`} onClick={() => setSelectedSession(session)}>
-                                    <div className="sess-top">
-                                        <div className="sess-avatar">🤖<div className="sess-status-dot dot-connected"></div></div>
-                                        <div className="sess-info">
-                                            <div className="sess-name">{session.id}</div>
-                                            <div className="sess-phone">Sesi Aktif</div>
+                            {filteredSessions.slice(0, 3).map(session => {
+                                const isConnected = session.status === 'CONNECTED' || session.status === 'AUTHENTICATED';
+                                const isScanning = session.status === 'QR_RECEIVED';
+                                return (
+                                    <div key={session.id} className={`session-card ${selectedSession?.id === session.id ? 'selected' : ''}`} onClick={() => setSelectedSession(session)}>
+                                        <div className="sess-top">
+                                            <div className="sess-avatar">🤖<div className={`sess-status-dot ${isConnected ? 'dot-connected' : isScanning ? 'dot-scanning' : 'dot-stopped'}`}></div></div>
+                                            <div className="sess-info">
+                                                <div className="sess-name">{session.id}</div>
+                                                <div className="sess-phone">{session.status || 'Active'}</div>
+                                            </div>
+                                            <div className="sess-actions">
+                                                <div className="icon-btn" title="QR Code" onClick={(e) => { e.stopPropagation(); setIsQrModalOpen(true); }}><QrCode size={14}/></div>
+                                                <div className="icon-btn" title="Delete" onClick={(e) => { e.stopPropagation(); deleteSession(session.id); }}><Trash2 size={14}/></div>
+                                            </div>
                                         </div>
-                                        <div className="sess-actions">
-                                            <div className="icon-btn" title="QR Code" onClick={(e) => { e.stopPropagation(); setIsQrModalOpen(true); }}><QrCode size={14}/></div>
-                                            <div className="icon-btn" title="Delete" onClick={(e) => { e.stopPropagation(); deleteSession(session.id); }}><Trash2 size={14}/></div>
+                                        <div className="sess-footer">
+                                            <span className={`status-pill ${isConnected ? 'pill-connected' : isScanning ? 'pill-scanning' : 'pill-stopped'}`}>
+                                                <span className="pill-dot"></span>{session.status || 'Disconnected'}
+                                            </span>
+                                            <span className="sess-uptime">{isConnected ? 'Online' : 'Offline'}</span>
                                         </div>
                                     </div>
-                                    <div className="sess-footer">
-                                        <span className="status-pill pill-connected"><span className="pill-dot"></span>Connected</span>
-                                        <span className="sess-uptime">Active Now</span>
-                                    </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                             <div className="add-sess-card" onClick={() => setIsAddModalOpen(true)}>
                                 <div className="add-icon"><Plus size={28}/></div>
                                 <div className="add-text">Tambah Session Baru</div>
@@ -276,29 +285,35 @@ function App() {
                             <button className="btn btn-primary" onClick={() => setIsAddModalOpen(true)}>＋ Tambah Session</button>
                         </div>
                         <div className="sessions-grid">
-                            {filteredSessions.map(session => (
-                                <div key={session.id} className={`session-card ${selectedSession?.id === session.id ? 'selected' : ''}`} onClick={() => setSelectedSession(session)}>
-                                    <div className="sess-top">
-                                        <div className="sess-avatar">📱<div className="sess-status-dot dot-connected"></div></div>
-                                        <div className="sess-info">
-                                            <div className="sess-name">{session.id}</div>
-                                            <div className="sess-phone">Connected</div>
+                            {filteredSessions.map(session => {
+                                const isConnected = session.status === 'CONNECTED' || session.status === 'AUTHENTICATED';
+                                const isScanning = session.status === 'QR_RECEIVED';
+                                return (
+                                    <div key={session.id} className={`session-card ${selectedSession?.id === session.id ? 'selected' : ''}`} onClick={() => setSelectedSession(session)}>
+                                        <div className="sess-top">
+                                            <div className="sess-avatar">📱<div className={`sess-status-dot ${isConnected ? 'dot-connected' : isScanning ? 'dot-scanning' : 'dot-stopped'}`}></div></div>
+                                            <div className="sess-info">
+                                                <div className="sess-name">{session.id}</div>
+                                                <div className="sess-phone">{isConnected ? 'Terkoneksi' : isScanning ? 'Menunggu Scan' : 'Terputus'}</div>
+                                            </div>
+                                            <div className="sess-actions">
+                                                <div className="icon-btn" onClick={(e) => { e.stopPropagation(); setIsQrModalOpen(true); }}><QrCode size={14}/></div>
+                                                <div className="icon-btn" onClick={(e) => { e.stopPropagation(); deleteSession(session.id); }}><Trash2 size={14}/></div>
+                                            </div>
                                         </div>
-                                        <div className="sess-actions">
-                                            <div className="icon-btn" onClick={(e) => { e.stopPropagation(); setIsQrModalOpen(true); }}><QrCode size={14}/></div>
-                                            <div className="icon-btn" onClick={(e) => { e.stopPropagation(); deleteSession(session.id); }}><Trash2 size={14}/></div>
+                                        <div className="sess-meta">
+                                            <div className="sess-meta-item"><div className="sess-meta-label">ID</div><div className="sess-meta-val">{session.id}</div></div>
+                                            <div className="sess-meta-item"><div className="sess-meta-label">Status</div><div className="sess-meta-val">{session.status || 'Offline'}</div></div>
+                                        </div>
+                                        <div className="sess-footer">
+                                            <span className={`status-pill ${isConnected ? 'pill-connected' : isScanning ? 'pill-scanning' : 'pill-stopped'}`}>
+                                                <span className="pill-dot"></span>{isConnected ? 'Connected' : isScanning ? 'Scanning' : 'Disconnected'}
+                                            </span>
+                                            <button className="btn btn-outline btn-sm" style={{ padding: '2px 8px' }} onClick={(e) => { e.stopPropagation(); setSelectedSession(session); setCurrentPage('messages'); }}>Open Chat</button>
                                         </div>
                                     </div>
-                                    <div className="sess-meta">
-                                        <div className="sess-meta-item"><div className="sess-meta-label">ID</div><div className="sess-meta-val">{session.id}</div></div>
-                                        <div className="sess-meta-item"><div className="sess-meta-label">Status</div><div className="sess-meta-val">Active</div></div>
-                                    </div>
-                                    <div className="sess-footer">
-                                        <span className="status-pill pill-connected"><span className="pill-dot"></span>Connected</span>
-                                        <button className="btn btn-outline btn-sm" style={{ padding: '2px 8px' }} onClick={(e) => { e.stopPropagation(); setSelectedSession(session); setCurrentPage('messages'); }}>Open Chat</button>
-                                    </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                             <div className="add-sess-card" onClick={() => setIsAddModalOpen(true)}>
                                 <div className="add-icon"><Plus size={28}/></div>
                                 <div className="add-text">Tambah Session Baru</div>

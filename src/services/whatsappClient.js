@@ -4,6 +4,7 @@ const logger = require('../utils/logger');
 class WhatsAppClient {
     constructor() {
         this.clients = new Map();
+        this.statuses = new Map(); // 'CONNECTED', 'QR_RECEIVED', 'DISCONNECTED', 'LOADING'
         this.io = null;
     }
 
@@ -18,6 +19,7 @@ class WhatsAppClient {
         }
 
         logger.info(`Initializing session: ${sessionId} with Chromium: ${process.env.PUPPETEER_EXECUTABLE_PATH || 'default'}`);
+        this.statuses.set(sessionId, 'LOADING');
         
         try {
             const client = new Client({
@@ -52,6 +54,7 @@ class WhatsAppClient {
 
             client.on('qr', (qr) => {
                 logger.info(`QR Code received for session ${sessionId}`);
+                this.statuses.set(sessionId, 'QR_RECEIVED');
                 if (this.io) {
                     this.io.emit('qr', { sessionId, qr });
                 }
@@ -59,6 +62,7 @@ class WhatsAppClient {
 
             client.on('ready', () => {
                 logger.info(`WhatsApp Client ${sessionId} is ready!`);
+                this.statuses.set(sessionId, 'CONNECTED');
                 if (this.io) {
                     this.io.emit('ready', { sessionId });
                 }
@@ -66,6 +70,7 @@ class WhatsAppClient {
 
             client.on('authenticated', () => {
                 logger.info(`WhatsApp Client ${sessionId} authenticated`);
+                this.statuses.set(sessionId, 'AUTHENTICATED');
                 if (this.io) {
                     this.io.emit('authenticated', { sessionId });
                 }
@@ -73,6 +78,7 @@ class WhatsAppClient {
 
             client.on('auth_failure', (msg) => {
                 logger.error(`WhatsApp Authentication failure for ${sessionId}`, msg);
+                this.statuses.set(sessionId, 'DISCONNECTED');
                 if (this.io) {
                     this.io.emit('auth_failure', { sessionId, message: msg });
                 }
@@ -80,10 +86,12 @@ class WhatsAppClient {
 
             client.on('disconnected', (reason) => {
                 logger.warn(`WhatsApp Client ${sessionId} disconnected`, reason);
+                this.statuses.set(sessionId, 'DISCONNECTED');
                 if (this.io) {
                     this.io.emit('disconnected', { sessionId, reason });
                 }
                 this.clients.delete(sessionId);
+                this.statuses.delete(sessionId);
             });
 
             client.on('message', async msg => {
@@ -102,12 +110,14 @@ class WhatsAppClient {
             } catch (error) {
                 logger.error(`Failed to initialize client ${sessionId}:`, error);
                 this.clients.delete(sessionId);
+                this.statuses.delete(sessionId);
             }
 
             return client;
         } catch (error) {
             logger.error(`Error creating LocalAuth for session ${sessionId}:`, error);
             this.clients.delete(sessionId);
+            this.statuses.delete(sessionId);
             throw new Error('Invalid Session ID: Gunakan hanya huruf, angka, _ atau -');
         }
     }
@@ -132,22 +142,18 @@ class WhatsAppClient {
     }
 
     async getStatus(sessionId) {
-        const client = this.getClient(sessionId);
-        if (!client) return 'DISCONNECTED';
-        try {
-            const state = await client.getState();
-            return state || 'CONNECTED';
-        } catch (e) {
-            return 'DISCONNECTED';
-        }
+        return this.statuses.get(sessionId) || 'DISCONNECTED';
     }
 
     getAllSessions() {
-        const sessions = [];
+        const sessionsList = [];
         for (let [id, client] of this.clients) {
-            sessions.push({ id });
+            sessionsList.push({ 
+                id, 
+                status: this.statuses.get(id) || 'CONNECTED' 
+            });
         }
-        return sessions;
+        return sessionsList;
     }
 
     async deleteSession(sessionId) {
@@ -157,6 +163,7 @@ class WhatsAppClient {
         try {
             await client.destroy();
             this.clients.delete(sessionId);
+            this.statuses.delete(sessionId);
             logger.info(`Session ${sessionId} deleted successfully.`);
         } catch (error) {
             logger.error(`Error deleting session ${sessionId}:`, error);
