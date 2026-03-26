@@ -410,6 +410,74 @@ function App() {
                         </div>
                     </div>
                 );
+            case 'steps':
+                return (
+                    <div className="page-area active">
+                        <div className="sec-header">
+                            <div className="sec-title">Panduan Integrasi (POST Method)</div>
+                        </div>
+                        <div className="qr-steps" style={{ gap: '14px', display: 'flex', flexDirection: 'column' }}>
+                            <div className="stat-card" style={{ textAlign: 'left', animationDelay: '0.05s', borderLeft: '4px solid var(--wa)' }}>
+                                <div className="qr-step">
+                                    <div className="step-num">1</div>
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--wa)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            Inisialisasi Sesi <span className="api-method method-post">POST</span>
+                                        </div>
+                                        <div style={{ fontSize: '12px', color: 'var(--muted2)', marginTop: '6px' }}>Kirimkan nama sesi yang unik (tanpa spasi) untuk memulai proses koneksi.</div>
+                                        <div className="code-block" style={{ marginTop: '12px' }}>
+{`POST ${API_BASE}/sessions
+{
+  "sessionId": "my-bot-account"
+}`}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="stat-card" style={{ textAlign: 'left', animationDelay: '0.15s', borderLeft: '4px solid var(--blue)' }}>
+                                <div className="qr-step">
+                                    <div className="step-num">2</div>
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--blue)' }}>Hubungkan Perangkat (Scan QR)</div>
+                                        <div style={{ fontSize: '12px', color: 'var(--muted2)', marginTop: '6px' }}>Pantau event 'qr' melalui Socket.io atau dashboard ini, lalu scan menggunakan aplikasi WhatsApp di HP Anda.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="stat-card" style={{ textAlign: 'left', animationDelay: '0.25s', borderLeft: '4px solid var(--wa)' }}>
+                                <div className="qr-step">
+                                    <div className="step-num">3</div>
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--wa)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            Kirim Pesan Otomatis <span className="api-method method-post">POST</span>
+                                        </div>
+                                        <div style={{ fontSize: '12px', color: 'var(--muted2)', marginTop: '6px' }}>Setelah status 'CONNECTED', sistem Anda siap mengirim pesan secara massal atau terjadwal.</div>
+                                        <div className="code-block" style={{ marginTop: '12px' }}>
+{`POST ${API_BASE}/send-message
+{
+  "sessionId": "my-bot-account",
+  "number": "628123456789",
+  "message": "Halo! Ini pesan otomatis via API.",
+  "apikey": "${API_KEY}"
+}`}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="stat-card" style={{ textAlign: 'left', animationDelay: '0.35s', borderLeft: '4px solid var(--yellow)' }}>
+                                <div className="qr-step">
+                                    <div className="step-num" style={{ background: 'var(--yellow)' }}>4</div>
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontWeight: 700, fontSize: '14px', color: 'var(--yellow)' }}>Monitoring & Logs</div>
+                                        <div style={{ fontSize: '12px', color: 'var(--muted2)', marginTop: '6px' }}>Lihat menu 'Messages' di dashboard untuk memantau apakah pesan terkirim atau gagal secara real-time.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
             case 'api':
                 return (
                     <div className="page-area active">
@@ -422,18 +490,14 @@ function App() {
                                 <tbody>
                                     <tr><td><span className="api-method method-get">GET</span></td><td style={{ fontFamily: 'var(--mono)' }}>/api/sessions</td><td>List all active sessions</td></tr>
                                     <tr><td><span className="api-method method-post">POST</span></td><td style={{ fontFamily: 'var(--mono)' }}>/api/send-message</td><td>Send WhatsApp Message</td></tr>
-                                    <tr><td><span className="api-method method-get">GET</span></td><td style={{ fontFamily: 'var(--mono)' }}>/api/send</td><td>Send via URL Query (GET)</td></tr>
+                                    <tr><td><span className="api-method method-get">GET</span></td><td style={{ fontFamily: 'var(--mono)' }}>/api/send</td><td>Direct Send via URL Query</td></tr>
                                 </tbody>
                             </table>
                         </div>
                         <div className="code-example">
-                            <div style={{ fontWeight: 700, fontSize: '13px', marginBottom: '12px' }}>Example: Integration (JavaScript)</div>
-                            <div className="code-block">
-                                {`// Kirim Pesan via API
-fetch('${API_BASE}/send', {
-  method: 'GET',
-  headers: { 'x-api-key': '${API_KEY}' }
-})`}
+                            <div style={{ fontWeight: 700, fontSize: '13px', marginBottom: '12px' }}>Quick Integration (GET Method)</div>
+                            <div className="code-block" style={{ wordBreak: 'break-all' }}>
+                                {`${window.location.origin}/api/send?number=628xxx&message=Halo&apikey=${API_KEY}`}
                             </div>
                         </div>
                     </div>
@@ -467,6 +531,10 @@ fetch('${API_BASE}/send', {
                 </div>
                 <div className={`sb-item ${currentPage === 'messages' ? 'active' : ''}`} onClick={() => showPage('messages')}>
                     <MessageSquare className="sb-icon" size={18} /> Messenging
+                    <div className="sb-dot"></div>
+                </div>
+                <div className={`sb-item ${currentPage === 'steps' ? 'active' : ''}`} onClick={() => showPage('steps')}>
+                    <ListChecks className="sb-icon" size={18} /> Langkah Integrasi
                     <div className="sb-dot"></div>
                 </div>
 
