@@ -165,39 +165,6 @@ body {
 .sec-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 .sec-title::before { content: ''; display: inline-block; width: 3px; height: 16px; background: var(--wa); border-radius: 2px; }
 
-/* Status Banner (Global) */
-.status-banner {
-    background: rgba(43, 86, 255, 0.15);
-    border-bottom: 1px solid rgba(43, 86, 255, 0.3);
-    padding: 10px 24px;
-    z-index: 50;
-    animation: fadeIn 0.3s ease;
-}
-
-.status-banner.error {
-    background: rgba(239, 68, 68, 0.15);
-    border-bottom: 1px solid rgba(239, 68, 68, 0.3);
-    color: #ef4444;
-}
-
-.sb-inner {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--fg);
-}
-
-.status-banner.error .sb-inner {
-    color: #ef4444;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
 /* Sessions grid */
 .sessions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
 
@@ -359,3 +326,18 @@ select.form-input-new { cursor: pointer; }
 /* Code example */
 .code-example { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; animation: fadeUp .35s ease; text-align: left; }
 .code-block { background: var(--sidebar); border: 1px solid var(--border); border-radius: 8px; padding: 16px; font-family: var(--mono); font-size: 12px; color: var(--text); overflow-x: auto; line-height: 1.7; }
+
+/* ─── API Steps (Mockup style) ─── */
+.api-steps-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.api-step-item { display: flex; align-items: center; gap: 12px; }
+.api-step-dot { color: var(--muted); font-size: 20px; line-height: 1; }
+.api-label { font-weight: 700; font-size: 14px; color: var(--text); min-width: 85px; }
+.api-badge-code { font-family: var(--mono); background: var(--surface2); padding: 5px 12px; border-radius: 6px; font-size: 13px; border: 1px solid var(--border); }
+.api-badge-yellow { color: var(--yellow); }
+.api-badge-green  { color: var(--wa); }
+.api-badge-muted  { color: var(--muted2); }
+.badge-method-post { background: #2f3b4c; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 800; color: #f5a623; text-transform: uppercase; }
+
+.code-block-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 16px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); font-size: 11px; color: var(--muted); font-family: var(--mono); }
+.copy-btn { cursor: pointer; transition: .15s; }
+.copy-btn:hover { color: var(--wa); }

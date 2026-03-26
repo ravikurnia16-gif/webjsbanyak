@@ -425,67 +425,60 @@ function App() {
                 return (
                     <div className="page-area active">
                         <div className="sec-header">
-                            <div className="sec-title">Panduan Langkah Integrasi (POST Method)</div>
+                            <div className="sec-title">Integrasi API (POST Method)</div>
                         </div>
                         
-                        <div className="stat-card" style={{ textAlign: 'left', animation: 'fadeUp .3s ease both' }}>
-                            <div className="qr-steps" style={{ gap: '24px' }}>
-                                <div className="qr-step">
-                                    <div className="step-num">1</div>
-                                    <div className="step-text">
-                                        <strong style={{ color: 'var(--text)', fontSize: '14px' }}>Buat Sesi WhatsApp</strong><br/>
-                                        Masuk ke menu <strong>Sessions</strong> dan klik <strong>Tambah Session</strong>. Berikan nama unik (contoh: <code>sesi-utama</code>).
-                                    </div>
+                        <div className="stat-card" style={{ textAlign: 'left', padding: '30px', animation: 'fadeUp .3s ease both' }}>
+                            <ul className="api-steps-list">
+                                <li className="api-step-item">
+                                    <span className="api-step-dot">•</span>
+                                    <span className="api-label">Base URL:</span> 
+                                    <code className="api-badge-code api-badge-yellow">{window.location.host}</code>
+                                </li>
+                                <li className="api-step-item">
+                                    <span className="api-step-dot">•</span>
+                                    <span className="api-label">Endpoint:</span> 
+                                    <code className="api-badge-code api-badge-green">/api/send-message</code>
+                                </li>
+                                <li className="api-step-item">
+                                    <span className="api-step-dot">•</span>
+                                    <span className="api-label">Method:</span> 
+                                    <span className="badge-method-post">POST</span>
+                                </li>
+                                <li className="api-step-item">
+                                    <span className="api-step-dot">•</span>
+                                    <span className="api-label">Header:</span> 
+                                    <code className="api-badge-code api-badge-muted">Content-Type: application/json</code>
+                                </li>
+                                <li className="api-step-item">
+                                    <span className="api-step-dot">•</span>
+                                    <span className="api-label">Body:</span>
+                                </li>
+                            </ul>
+
+                            <div className="code-block" style={{ marginTop: '16px', padding: 0, background: '#090c10', border: '1px solid var(--border)', borderRadius: '12px' }}>
+                                <div className="code-block-header">
+                                    <span>json</span>
+                                    <Copy className="copy-btn" size={14} />
                                 </div>
-                                <div className="qr-step">
-                                    <div className="step-num">2</div>
-                                    <div className="step-text">
-                                        <strong style={{ color: 'var(--text)', fontSize: '14px' }}>Hubungkan Perangkat (Scan QR)</strong><br/>
-                                        Klik ikon QR pada sesi yang baru dibuat. Buka WhatsApp di HP Anda &gt; Perangkat Tertaut &gt; Tautkan Perangkat.
-                                    </div>
-                                </div>
-                                <div className="qr-step">
-                                    <div className="step-num">3</div>
-                                    <div className="step-text">
-                                        <strong style={{ color: 'var(--text)', fontSize: '14px' }}>Integrasi API (Method: POST)</strong><br/>
-                                        Gunakan endpoint di bawah ini untuk mengirim pesan dari website Anda. Pastikan menggunakan <code>method: POST</code> dan <code>Content-Type: application/json</code>.
-                                    </div>
-                                </div>
-                                <div className="code-example" style={{ marginLeft: '32px', marginTop: '-10px' }}>
-                                    <div className="code-block">
-{`// Contoh Integrasi JavaScript (Fetch)
-fetch('${API_BASE}/send-message', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'x-api-key': '${appApiKey}'
-  },
-  body: JSON.stringify({
-    sessionId: 'sesi-utama', // ID yang Anda buat
-    number: '628123456789',
-    message: 'Halo, ini pesan dari website!'
-  })
-})`}
-                                    </div>
-                                </div>
-                                <div className="qr-step">
-                                    <div className="step-num">4</div>
-                                    <div className="step-text">
-                                        <strong style={{ color: 'var(--text)', fontSize: '14px' }}>Keamanan API Key</strong><br/>
-                                        Simpan <code>x-api-key</code> Anda dengan aman di server backend website Anda. Jangan tampilkan secara publik di frontend website Anda.
-                                    </div>
+                                <div style={{ padding: '16px', whiteSpace: 'pre-wrap' }}>
+{`{
+  "sessionId": "${selectedSession?.id || 'id_sesi_anda'}",
+  "number": "628xxxxxxxxxx",
+  "message": "Isi pesan anda",
+  "apikey": "${appApiKey}"
+}`}
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="info-box" style={{ background: 'rgba(37, 211, 102, 0.05)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--wa)', marginTop: '10px' }}>
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <div style={{ color: 'var(--wa)', fontSize: '20px' }}><CheckCircle size={24}/></div>
                                 <div>
-                                    <div style={{ color: 'var(--text)', fontWeight: 700, marginBottom: '4px' }}>Tips Sukses</div>
+                                    <div style={{ color: 'var(--text)', fontWeight: 700, marginBottom: '4px' }}>Saran Penggunaan</div>
                                     <div style={{ fontSize: '12px', color: 'var(--muted2)', lineHeight: '1.6' }}>
-                                        Gunakan format nomor internasional tanpa tanda plus (contoh: 628...). <br/>
-                                        Sistem akan otomatis me-refresh status koneksi setiap kali Anda membuka dashboard ini.
+                                        Gunakan field <code>apikey</code> di dalam JSON body atau header <code>x-api-key</code> untuk autentikasi yang aman.
                                     </div>
                                 </div>
                             </div>
