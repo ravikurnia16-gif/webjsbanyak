@@ -151,14 +151,24 @@ function App() {
     };
 
     useEffect(() => {
-        const socket = io(SOCKET_URL, { transports: ['websocket'] });
+        const socket = io(window.location.origin, { transports: ['websocket'] });
+        
+        socket.on('connect', () => {
+            console.log('Socket.io connected:', socket.id);
+            setStatusMessage('Dashboard connected to server.');
+            setTimeout(() => setStatusMessage(''), 2000);
+        });
+
+        socket.on('connect_error', (err) => {
+            console.error('Socket.io error:', err.message);
+            setStatusMessage('⚠️ Real-time connection failed. Please refresh.');
+        });
 
         socket.on('qr', ({ sessionId, qr }) => {
+            console.log('QR Code received:', sessionId);
             setIsInitializing(false);
             setActiveQr({ sessionId, qr });
-            if (currentPage === 'dashboard' || currentPage === 'sessions') {
-                setIsQrModalOpen(true);
-            }
+            setIsQrModalOpen(true);
         });
 
         socket.on('ready', ({ sessionId }) => {
