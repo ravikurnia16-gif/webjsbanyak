@@ -165,6 +165,39 @@ body {
 .sec-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 .sec-title::before { content: ''; display: inline-block; width: 3px; height: 16px; background: var(--wa); border-radius: 2px; }
 
+/* Status Banner (Global) */
+.status-banner {
+    background: rgba(43, 86, 255, 0.15);
+    border-bottom: 1px solid rgba(43, 86, 255, 0.3);
+    padding: 10px 24px;
+    z-index: 50;
+    animation: fadeIn 0.3s ease;
+}
+
+.status-banner.error {
+    background: rgba(239, 68, 68, 0.15);
+    border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+.sb-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--fg);
+}
+
+.status-banner.error .sb-inner {
+    color: #ef4444;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
 /* Sessions grid */
 .sessions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
 

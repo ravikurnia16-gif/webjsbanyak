@@ -230,16 +230,20 @@ function App() {
         }
 
         setIsInitializing(true);
-        setIsAddModalOpen(false);
+        setStatusMessage('🔄 Sedang menghubungi server...');
         try {
-            await axios.post(`${API_BASE}/sessions`, { sessionId: newSessionId }, {
+            const response = await axios.post(`${API_BASE}/sessions`, { sessionId: newSessionId }, {
                 headers: { 'x-api-key': API_KEY }
             });
             setNewSessionId('');
-            setStatusMessage('Initializing... Tunggu sebentar untuk QR Code.');
+            setStatusMessage('📡 Server Terhubung! Menunggu WhatsApp menyiapkan QR Code (10-30 detik)...');
+            console.log('Session creation response:', response.data);
         } catch (err) {
             setIsInitializing(false);
-            setStatusMessage('Gagal membuat sesi');
+            const errMsg = err.response?.data?.error || err.message;
+            console.error('Create session failed:', err);
+            setStatusMessage(`❌ Gagal: ${errMsg}`);
+            alert(`Gagal Membuat Sesi!\n\nDetail: ${errMsg}\n\nPastikan server sudah berjalan dan Kunci API benar.`);
         }
     };
 
@@ -793,6 +797,16 @@ function App() {
                         <button className="btn btn-primary" onClick={() => setIsAddModalOpen(true)}>＋ Tambah Session</button>
                     </div>
                 </div>
+
+                {/* Global Status Banner */}
+                {(statusMessage || isInitializing) && (
+                    <div className={`status-banner ${statusMessage.includes('❌') ? 'error' : ''}`}>
+                        <div className="sb-inner">
+                            {isInitializing && <Loader2 className="spinner" size={16} />}
+                            <span>{statusMessage || '🔄 Sedang Menyiapkan WhatsApp...'}</span>
+                        </div>
+                    </div>
+                )}
 
                 <div className="content-area">
                     {renderPage()}

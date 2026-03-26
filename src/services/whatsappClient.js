@@ -31,7 +31,7 @@ class WhatsAppClient {
                     remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
                 },
                 puppeteer: {
-                    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
+                    executablePath: process.platform === 'win32' ? undefined : (process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium'),
                     headless: true,
                     args: [
                         '--no-sandbox',
