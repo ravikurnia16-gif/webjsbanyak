@@ -3,7 +3,9 @@ require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 module.exports = {
   port: process.env.PORT || 3000,
-  apiKey: process.env.API_KEY,
+  apiKey: (process.env.API_KEY || 'secret123').trim(),
   webhookUrl: process.env.WEBHOOK_URL,
   logLevel: process.env.LOG_LEVEL || 'info',
 };
+
+console.log(`[Config] Port: ${module.exports.port}, Key: ${module.exports.apiKey.substring(0,3)}... (length: ${module.exports.apiKey.length})`);
