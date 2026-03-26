@@ -5,7 +5,7 @@ exports.sendMessage = async (req, res) => {
     const targetSession = sessionId || req.headers['x-session-id'];
 
     if (!number || !message || !targetSession) {
-        return res.status(400).json({ error: 'Number, message, and sessionId are required' });
+        return res.status(400).json({ error: 'number, message, and sessionId are required' });
     }
 
     try {
