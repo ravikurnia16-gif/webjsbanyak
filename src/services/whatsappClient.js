@@ -18,85 +18,98 @@ class WhatsAppClient {
         }
 
         logger.info(`Initializing session: ${sessionId} with Chromium: ${process.env.PUPPETEER_EXECUTABLE_PATH || 'default'}`);
-        const client = new Client({
-            authStrategy: new LocalAuth({ clientId: sessionId }),
-            authTimeoutMs: 60000,
-            qrMaxRetries: 5,
-            webVersionCache: {
-                type: 'remote',
-                remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
-            },
-            puppeteer: {
-                executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
-                headless: true,
-                args: [
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox',
-                    '--disable-dev-shm-usage',
-                    '--disable-accelerated-2d-canvas',
-                    '--no-first-run',
-                    '--disable-gpu',
-                    '--disable-canvas-aa',
-                    '--disable-2d-canvas-clip-aa',
-                    '--disable-gl-drawing-for-tests',
-                    '--disable-dev-db-utils',
-                    '--mute-audio',
-                    '--no-default-browser-check'
-                ]
-            }
-        });
-
-        this.clients.set(sessionId, client);
-
-        client.on('qr', (qr) => {
-            logger.info(`QR Code received for session ${sessionId}`);
-            if (this.io) {
-                this.io.emit('qr', { sessionId, qr });
-            }
-        });
-
-        client.on('ready', () => {
-            logger.info(`WhatsApp Client ${sessionId} is ready!`);
-            if (this.io) {
-                this.io.emit('ready', { sessionId });
-            }
-        });
-
-        client.on('authenticated', () => {
-            logger.info(`WhatsApp Client ${sessionId} authenticated`);
-            if (this.io) {
-                this.io.emit('authenticated', { sessionId });
-            }
-        });
-
-        client.on('auth_failure', (msg) => {
-            logger.error(`WhatsApp Authentication failure for ${sessionId}`, msg);
-            if (this.io) {
-                this.io.emit('auth_failure', { sessionId, message: msg });
-            }
-        });
-
-        client.on('disconnected', (reason) => {
-            logger.warn(`WhatsApp Client ${sessionId} disconnected`, reason);
-            if (this.io) {
-                this.io.emit('disconnected', { sessionId, reason });
-            }
-            this.clients.delete(sessionId);
-        });
-
-        client.on('message', async msg => {
-            logger.info(`Message received from ${msg.from} on session ${sessionId}: ${msg.body}`);
-            // Future webhook logic here
-        });
-
+        
         try {
-            await client.initialize();
-        } catch (error) {
-            logger.error(`Failed to initialize client ${sessionId}:`, error);
-            this.clients.delete(sessionId);
-        }
+            const client = new Client({
+                authStrategy: new LocalAuth({ clientId: sessionId }),
+                authTimeoutMs: 60000,
+                qrMaxRetries: 5,
+                webVersionCache: {
+                    type: 'remote',
+                    remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
+                },
+                puppeteer: {
+                    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
+                    headless: true,
+                    args: [
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--disable-dev-shm-usage',
+                        '--disable-accelerated-2d-canvas',
+                        '--no-first-run',
+                        '--disable-gpu',
+                        '--disable-canvas-aa',
+                        '--disable-2d-canvas-clip-aa',
+                        '--disable-gl-drawing-for-tests',
+                        '--disable-dev-db-utils',
+                        '--mute-audio',
+                        '--no-default-browser-check'
+                    ]
+                }
+            });
 
-        return client;
+            this.clients.set(sessionId, client);
+
+            client.on('qr', (qr) => {
+                logger.info(`QR Code received for session ${sessionId}`);
+                if (this.io) {
+                    this.io.emit('qr', { sessionId, qr });
+                }
+            });
+
+            client.on('ready', () => {
+                logger.info(`WhatsApp Client ${sessionId} is ready!`);
+                if (this.io) {
+                    this.io.emit('ready', { sessionId });
+                }
+            });
+
+            client.on('authenticated', () => {
+                logger.info(`WhatsApp Client ${sessionId} authenticated`);
+                if (this.io) {
+                    this.io.emit('authenticated', { sessionId });
+                }
+            });
+
+            client.on('auth_failure', (msg) => {
+                logger.error(`WhatsApp Authentication failure for ${sessionId}`, msg);
+                if (this.io) {
+                    this.io.emit('auth_failure', { sessionId, message: msg });
+                }
+            });
+
+            client.on('disconnected', (reason) => {
+                logger.warn(`WhatsApp Client ${sessionId} disconnected`, reason);
+                if (this.io) {
+                    this.io.emit('disconnected', { sessionId, reason });
+                }
+                this.clients.delete(sessionId);
+            });
+
+            client.on('message', async msg => {
+                logger.info(`Message received from ${msg.from} on session ${sessionId}: ${msg.body}`);
+                if (this.io) {
+                    this.io.emit('message', {
+                        sessionId,
+                        from: msg.from,
+                        body: msg.body
+                    });
+                }
+            });
+
+            try {
+                await client.initialize();
+            } catch (error) {
+                logger.error(`Failed to initialize client ${sessionId}:`, error);
+                this.clients.delete(sessionId);
+            }
+
+            return client;
+        } catch (error) {
+            logger.error(`Error creating LocalAuth for session ${sessionId}:`, error);
+            this.clients.delete(sessionId);
+            throw new Error('Invalid Session ID: Gunakan hanya huruf, angka, _ atau -');
+        }
     }
 
     getClient(sessionId) {

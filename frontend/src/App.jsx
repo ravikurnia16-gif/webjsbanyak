@@ -91,6 +91,14 @@ function App() {
 
     const createSession = async () => {
         if (!newSessionId) return;
+        
+        // Match LocalAuth.js:20 requirement: Only alphanumeric, underscores and hyphens
+        if (!/^[a-zA-Z0-9_-]+$/.test(newSessionId)) {
+            setStatusMessage('Error: ID Sesi hanya boleh berisi huruf, angka, _ dan -. (Tanpa Spasi)');
+            alert('ID Sesi tidak valid! Gunakan hanya huruf, angka, garis bawah (_), atau tanda hubung (-). Spasi tidak diperbolehkan.');
+            return;
+        }
+
         setIsInitializing(true);
         setIsAddModalOpen(false);
         try {
