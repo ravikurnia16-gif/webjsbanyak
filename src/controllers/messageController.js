@@ -30,4 +30,20 @@ exports.sendMedia = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Failed to send media', details: error.message });
     }
-}
+};
+
+// New GET trigger for simple automation
+exports.triggerMessage = async (req, res) => {
+    const { number, message, sessionId } = req.query;
+    
+    if (!number || !message || !sessionId) {
+        return res.status(400).json({ error: 'number, message, and sessionId are required in query params' });
+    }
+
+    try {
+        const response = await whatsapp.sendMessage(sessionId, number, message);
+        res.json({ success: true, message: 'Triggered successfully', response });
+    } catch (error) {
+        res.status(500).json({ error: 'Trigger failed', details: error.message });
+    }
+};
