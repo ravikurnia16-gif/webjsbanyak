@@ -27,12 +27,41 @@ function App() {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isQrModalOpen, setIsQrModalOpen] = useState(false);
     const [bulkNumbers, setBulkNumbers] = useState('');
+    const [spreadsheetUrl, setSpreadsheetUrl] = useState('');
+    const [spreadsheetData, setSpreadsheetData] = useState([]);
     const [bulkInterval, setBulkInterval] = useState(5);
     const [isBlasting, setIsBlasting] = useState(false);
     const [blastProgress, setBlastProgress] = useState({ current: 0, total: 0 });
     const [logs, setLogs] = useState([
         { id: 1, dir: 'out', session: 'system', to: '62812xxxxxx', text: 'Sistem siap digunakan.', type: 'text', time: new Date().toLocaleTimeString(), status: 'Sent' }
     ]);
+
+    const handleSpreadsheetFetch = async () => {
+        try {
+            const match = spreadsheetUrl.match(/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+            if (!match) {
+                alert('URL Spreadsheet tidak valid! Pastikan link dishare "Anyone with link".');
+                return;
+            }
+            const sheetId = match[1];
+            const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+            const res = await axios.get(csvUrl);
+            const rows = res.data.split('\n').map(r => r.split(',').map(c => c.replace(/^"|"$/g, '').trim()));
+            const headers = rows[0];
+            const data = rows.slice(1).map(row => {
+                const obj = {};
+                headers.forEach((h, i) => obj[h] = row[i]);
+                return obj;
+            }).filter(d => Object.values(d).some(v => v));
+            setSpreadsheetData(data);
+            const nums = data.map(d => Object.values(d)[0]).join('\n'); // Assume first column is number if not specified
+            setBulkNumbers(nums);
+            setStatusMessage(`Berhasil memuat ${data.length} data dari Spreadsheet!`);
+            setTimeout(() => setStatusMessage(''), 3000);
+        } catch (err) {
+            alert('Gagal mengambil data. Pastikan Spreadsheet "Publish to the web" atau "Anyone with the link can view".');
+        }
+    };
 
     const handleImport = (e) => {
         const file = e.target.files[0];
@@ -47,24 +76,36 @@ function App() {
     };
 
     const sendBulkMessages = async () => {
-        if (!selectedSession || !bulkNumbers || !message) {
-            alert('Pilih Sesi, masukkan Nomor, dan isi Pesan dahulu!');
+        if (!selectedSession || (!bulkNumbers && spreadsheetData.length === 0) || !message) {
+            alert('Pilih Sesi, masukkan Data, dan isi Pesan dahulu!');
             return;
         }
-        const numbers = bulkNumbers.split('\n').map(n => n.trim()).filter(n => n.length > 5);
-        if (numbers.length === 0) return;
+
+        const dataToProcess = spreadsheetData.length > 0 ? spreadsheetData : bulkNumbers.split('\n').map(n => ({ nomor: n.trim() })).filter(d => d.nomor.length > 5);
+        if (dataToProcess.length === 0) return;
 
         setIsBlasting(true);
-        setBlastProgress({ current: 0, total: numbers.length });
+        setBlastProgress({ current: 0, total: dataToProcess.length });
 
-        for (let i = 0; i < numbers.length; i++) {
-            if (!isBlasting) break; // Allow stopping? (Wait, we need a way to stop)
-            const num = numbers[i];
+        for (let i = 0; i < dataToProcess.length; i++) {
+            if (!isBlasting) break;
+            const row = dataToProcess[i];
+            const numField = Object.keys(row).find(k => k.toLowerCase().includes('nomor') || k.toLowerCase().includes('phone') || k.toLowerCase().includes('wa')) || Object.keys(row)[0];
+            const num = row[numField] || '';
+            if (num.length < 5) continue;
+
+            // Variable replacement
+            let personalizedMsg = message;
+            Object.keys(row).forEach(key => {
+                const regex = new RegExp(`{${key}}`, 'gi');
+                personalizedMsg = personalizedMsg.replace(regex, row[key] || '');
+            });
+
             try {
                 await axios.post(`${API_BASE}/send-message`, {
                     sessionId: selectedSession.id,
                     number: num,
-                    message: message,
+                    message: personalizedMsg,
                     apikey: API_KEY
                 });
                 
@@ -73,7 +114,7 @@ function App() {
                     dir: 'out',
                     session: selectedSession.id,
                     to: num,
-                    text: message,
+                    text: personalizedMsg,
                     type: 'text',
                     time: new Date().toLocaleTimeString(),
                     status: 'Sent'
@@ -83,14 +124,13 @@ function App() {
             }
             
             setBlastProgress(prev => ({ ...prev, current: i + 1 }));
-            
-            if (i < numbers.length - 1) {
+            if (i < dataToProcess.length - 1) {
                 await new Promise(resolve => setTimeout(resolve, bulkInterval * 1000));
             }
         }
         
         setIsBlasting(false);
-        setStatusMessage(`Blast Selesai! ${numbers.length} pesan diproses.`);
+        setStatusMessage(`Blast Selesai! ${dataToProcess.length} data diproses.`);
         setTimeout(() => setStatusMessage(''), 5000);
     };
 
@@ -462,20 +502,36 @@ function App() {
                                         {sessions.map(s => <option key={s.id} value={s.id}>{s.id} ({s.status})</option>)}
                                     </select>
                                 </div>
+                                
+                                <div className="form-group-new" style={{ marginTop: '1rem' }}>
+                                    <label className="form-label-new">🔗 Google Spreadsheet URL (Otomatis)</label>
+                                    <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                                        <input className="form-input-new" style={{ flex: 1 }} placeholder="https://docs.google.com/spreadsheets/d/..." value={spreadsheetUrl} onChange={e => setSpreadsheetUrl(e.target.value)} />
+                                        <button className="btn btn-outline btn-sm" onClick={handleSpreadsheetFetch}>Sinkronkan</button>
+                                    </div>
+                                    {spreadsheetData.length > 0 && (
+                                        <div style={{ fontSize: '10px', color: 'var(--wa)', padding: '6px', background: 'var(--surface2)', borderRadius: '6px', marginTop: '8px', border: '1px solid var(--border)' }}>
+                                            <strong>Variabel Tersedia:</strong> {Object.keys(spreadsheetData[0]).map(k => `{${k}}`).join(', ')}
+                                        </div>
+                                    )}
+                                </div>
+
                                 <div className="form-group-new" style={{ marginTop: '1rem' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <label className="form-label-new">Daftar Nomor (62...)</label>
+                                        <label className="form-label-new">Daftar Nomor (Dihasilkan Otomatis)</label>
                                         <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer', padding: '2px 8px' }}>
                                             📥 Import .txt / .csv
                                             <input type="file" hidden accept=".txt,.csv" onChange={handleImport} />
                                         </label>
                                     </div>
-                                    <textarea className="form-input-new" style={{ height: '140px', resize: 'none', marginTop: '4px' }} placeholder="628123456789&#10;628121112223" value={bulkNumbers} onChange={e => setBulkNumbers(e.target.value)} />
+                                    <textarea className="form-input-new" style={{ height: '100px', resize: 'none', marginTop: '4px' }} placeholder="628123456789&#10;628121112223" value={bulkNumbers} onChange={e => setBulkNumbers(e.target.value)} />
                                 </div>
+
                                 <div className="form-group-new" style={{ marginTop: '1rem' }}>
-                                    <label className="form-label-new">Isi Pesan Blast</label>
-                                    <textarea className="form-input-new" style={{ height: '100px', resize: 'none' }} placeholder="Masukkan pesan..." value={message} onChange={e => setMessage(e.target.value)} />
+                                    <label className="form-label-new">Isi Pesan (Gunakan {'{Variabel}'} dari Header)</label>
+                                    <textarea className="form-input-new" style={{ height: '100px', resize: 'none' }} placeholder="Contoh: Halo {Nama}, tagihan Anda sebesar {Jumlah}..." value={message} onChange={e => setMessage(e.target.value)} />
                                 </div>
+
                                 <div className="form-grid" style={{ marginTop: '1rem' }}>
                                     <div className="form-group-new">
                                         <label className="form-label-new">Jeda Interval (Detik)</label>
@@ -484,7 +540,7 @@ function App() {
                                     <div className="form-group-new">
                                         <label className="form-label-new" style={{ visibility: 'hidden' }}>Action</label>
                                         <button className="btn btn-primary" onClick={sendBulkMessages} disabled={isBlasting || !selectedSession}>
-                                            {isBlasting ? <Loader2 className="spinner" size={16} /> : <Send size={16} />} 🚀 Mulai Blast
+                                            {isBlasting ? <Loader2 className="spinner" size={16} /> : <Send size={16} />} 🚀 Mulai Blast Massal
                                         </button>
                                     </div>
                                 </div>
@@ -503,12 +559,17 @@ function App() {
                                 {statusMessage && <p style={{ fontSize: '12px', color: 'var(--wa)', marginTop: '0.5rem' }}>{statusMessage}</p>}
                             </div>
                             <div className="stat-card" style={{ textAlign: 'left' }}>
-                                <label className="form-label-new">Tips Blast Aman</label>
+                                <label className="form-label-new">Langkah Koneksi Spreadsheet</label>
                                 <div className="qr-steps" style={{ marginTop: '1rem' }}>
-                                    <div className="qr-step"><div className="step-num">1</div><div className="step-text">Gunakan interval minimal 5-10 detik untuk menghindari ban.</div></div>
-                                    <div className="qr-step"><div className="step-num">2</div><div className="step-text">Gunakan sapaan variabel atau isi pesan yang beragam.</div></div>
-                                    <div className="qr-step"><div className="step-num">3</div><div className="step-text">Format nomor harus diawali kode negara (contoh: 628...).</div></div>
-                                    <div className="qr-step"><div className="step-num">4</div><div className="step-text">Import file mendukung format .txt atau .csv (nomor dipisah baris/koma).</div></div>
+                                    <div className="qr-step"><div className="step-num">1</div><div className="step-text">Buat Google Sheet, pastikan baris pertama adalah judul (Contoh: Nomor, Nama, Tagihan).</div></div>
+                                    <div className="qr-step"><div className="step-num">2</div><div className="step-text">Klik <strong>Share</strong> (Bagikan) -&gt; Ubah Ke <strong>Anyone with link</strong> (Siapa saja yang memiliki link).</div></div>
+                                    <div className="qr-step"><div className="step-num">3</div><div className="step-text">Salin link dari browser dan tempelkan ke kolom input Spreadsheet URL di kiri.</div></div>
+                                    <div className="qr-step"><div className="step-num">4</div><div className="step-text">Gunakan {'{Judul}'} di isi pesan untuk personalisasi (Contoh: {'{Nama}'}).</div></div>
+                                </div>
+                                <label className="form-label-new" style={{ marginTop: '2rem', display: 'block' }}>Tips Blast Aman</label>
+                                <div className="qr-steps" style={{ marginTop: '1rem' }}>
+                                    <div className="qr-step"><div className="step-num">✓</div><div className="step-text">Gunakan interval minimal 5-10 detik untuk menghindari ban.</div></div>
+                                    <div className="qr-step"><div className="step-num">✓</div><div className="step-text">Kirim pesan yang relevan dan personal agar tidak dianggap spam.</div></div>
                                 </div>
                             </div>
                         </div>
