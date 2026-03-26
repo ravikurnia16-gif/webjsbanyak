@@ -10,7 +10,7 @@ import './App.css';
 
 const SOCKET_URL = '/';
 const API_BASE = '/api';
-const API_KEY = 'secret123'; // Matches .env API_KEY
+const DEFAULT_API_KEY = 'secret123';
 
 function App() {
     const [currentPage, setCurrentPage] = useState('dashboard');
@@ -18,6 +18,7 @@ function App() {
     const [newSessionId, setNewSessionId] = useState('');
     const [isInitializing, setIsInitializing] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [apiKey, setApiKey] = useState(localStorage.getItem('wa_api_key') || DEFAULT_API_KEY);
     const [activeQr, setActiveQr] = useState(null);
     const [selectedSession, setSelectedSession] = useState(null);
     const [message, setMessage] = useState('');
@@ -31,6 +32,10 @@ function App() {
     const [spreadsheetData, setSpreadsheetData] = useState([]);
     const [bulkInterval, setBulkInterval] = useState(5);
     const [isBlasting, setIsBlasting] = useState(false);
+    
+    useEffect(() => {
+        localStorage.setItem('wa_api_key', apiKey);
+    }, [apiKey]);
     const [blastProgress, setBlastProgress] = useState({ current: 0, total: 0 });
     const [logs, setLogs] = useState([
         { id: 1, dir: 'out', session: 'system', to: '62812xxxxxx', text: 'Sistem siap digunakan.', type: 'text', time: new Date().toLocaleTimeString(), status: 'Sent' }
@@ -119,7 +124,7 @@ function App() {
                     number: num,
                     message: personalizedMsg
                 }, {
-                    headers: { 'x-api-key': API_KEY }
+                    headers: { 'x-api-key': apiKey }
                 });
                 
                 console.log(`Success ${num}:`, response.data);
@@ -210,7 +215,7 @@ function App() {
     const fetchSessions = async () => {
         try {
             const res = await axios.get(`${API_BASE}/sessions`, {
-                headers: { 'x-api-key': API_KEY }
+                headers: { 'x-api-key': apiKey }
             });
             setSessions(res.data);
             return res.data;
@@ -233,7 +238,7 @@ function App() {
         setStatusMessage('🔄 Sedang menghubungi server...');
         try {
             const response = await axios.post(`${API_BASE}/sessions`, { sessionId: newSessionId }, {
-                headers: { 'x-api-key': API_KEY }
+                headers: { 'x-api-key': apiKey }
             });
             setNewSessionId('');
             setStatusMessage('📡 Server Terhubung! Menunggu WhatsApp menyiapkan QR Code (10-30 detik)...');
@@ -255,7 +260,7 @@ function App() {
                 number: phoneNumber,
                 message: message
             }, {
-                headers: { 'x-api-key': API_KEY }
+                headers: { 'x-api-key': apiKey }
             });
             setLogs(prev => [{
                 id: Date.now(),
@@ -725,6 +730,35 @@ function App() {
                         </div>
                     </div>
                 );
+            case 'settings':
+                return (
+                    <div className="page-area active">
+                        <div className="sec-header">
+                            <div className="sec-title">Koneksi & Keamanan</div>
+                        </div>
+                        <div className="form-grid" style={{ maxWidth: '600px' }}>
+                            <div className="form-group-new full">
+                                <label className="form-label-new">API Key (Kunci Rahasia)</label>
+                                <input 
+                                    className="form-input-new" 
+                                    type="password" 
+                                    value={apiKey} 
+                                    onChange={e => setApiKey(e.target.value)} 
+                                    placeholder="Masukkan Kunci API (Default: secret123)"
+                                />
+                                <div style={{ fontSize: '12px', color: 'var(--muted)', marginTop: '8px' }}>
+                                    💡 Pastikan kunci ini sama dengan <code>API_KEY</code> di server (Easypanel). 
+                                    Kunci saat ini: <code>{apiKey}</code>
+                                </div>
+                            </div>
+                            <div style={{ marginTop: '20px' }}>
+                                <button className="btn btn-primary" onClick={() => { fetchSessions(); setStatusMessage('✅ Konfigurasi Disimpan!'); }}>
+                                    Tes & Simpan Koneksi
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
             default:
                 return null;
         }
@@ -739,6 +773,11 @@ function App() {
                         <div className="sb-logo-text">WA<span>Multi</span></div>
                     </div>
                     <div className="sb-logo-badge">v1.4</div>
+                </div>
+
+                <div className={`sb-item ${currentPage === 'settings' ? 'active' : ''}`} onClick={() => showPage('settings')}>
+                    <Settings className="sb-icon" size={18} /> Settings
+                    <div className="sb-dot"></div>
                 </div>
 
                 <div className="sb-section">Main Menu</div>
