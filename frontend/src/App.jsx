@@ -26,9 +26,73 @@ function App() {
     const [searchQuery, setSearchQuery] = useState('');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+    const [bulkNumbers, setBulkNumbers] = useState('');
+    const [bulkInterval, setBulkInterval] = useState(5);
+    const [isBlasting, setIsBlasting] = useState(false);
+    const [blastProgress, setBlastProgress] = useState({ current: 0, total: 0 });
     const [logs, setLogs] = useState([
         { id: 1, dir: 'out', session: 'system', to: '62812xxxxxx', text: 'Sistem siap digunakan.', type: 'text', time: new Date().toLocaleTimeString(), status: 'Sent' }
     ]);
+
+    const handleImport = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const text = event.target.result;
+            const cleaned = text.split(/[\n,;]/).map(n => n.trim()).filter(n => n.length > 5).join('\n');
+            setBulkNumbers(prev => prev ? prev + '\n' + cleaned : cleaned);
+        };
+        reader.readAsText(file);
+    };
+
+    const sendBulkMessages = async () => {
+        if (!selectedSession || !bulkNumbers || !message) {
+            alert('Pilih Sesi, masukkan Nomor, dan isi Pesan dahulu!');
+            return;
+        }
+        const numbers = bulkNumbers.split('\n').map(n => n.trim()).filter(n => n.length > 5);
+        if (numbers.length === 0) return;
+
+        setIsBlasting(true);
+        setBlastProgress({ current: 0, total: numbers.length });
+
+        for (let i = 0; i < numbers.length; i++) {
+            if (!isBlasting) break; // Allow stopping? (Wait, we need a way to stop)
+            const num = numbers[i];
+            try {
+                await axios.post(`${API_BASE}/send-message`, {
+                    sessionId: selectedSession.id,
+                    number: num,
+                    message: message,
+                    apikey: API_KEY
+                });
+                
+                setLogs(prev => [{
+                    id: Date.now(),
+                    dir: 'out',
+                    session: selectedSession.id,
+                    to: num,
+                    text: message,
+                    type: 'text',
+                    time: new Date().toLocaleTimeString(),
+                    status: 'Sent'
+                }, ...prev].slice(0, 100));
+            } catch (err) {
+                console.error(`Failed to send to ${num}`, err);
+            }
+            
+            setBlastProgress(prev => ({ ...prev, current: i + 1 }));
+            
+            if (i < numbers.length - 1) {
+                await new Promise(resolve => setTimeout(resolve, bulkInterval * 1000));
+            }
+        }
+        
+        setIsBlasting(false);
+        setStatusMessage(`Blast Selesai! ${numbers.length} pesan diproses.`);
+        setTimeout(() => setStatusMessage(''), 5000);
+    };
 
     useEffect(() => {
         const socket = io(SOCKET_URL, { transports: ['websocket'] });
@@ -353,7 +417,7 @@ function App() {
                         </div>
 
                         <div className="sec-header" style={{ marginTop: '1rem' }}>
-                            <div className="sec-title">History Pesan (Live)</div>
+                            <div className="sec-title">History Pesan Terkirim (Live)</div>
                         </div>
                         <div className="table-wrap">
                             <table className="log-table">
@@ -368,9 +432,9 @@ function App() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {logs.map(log => (
+                                    {logs.filter(l => l.dir === 'out').map(log => (
                                         <tr key={log.id}>
-                                            <td><span className={`log-dir ${log.dir === 'in' ? 'dir-in' : 'dir-out'}`}>{log.dir === 'in' ? '◀ IN' : '▶ OUT'}</span></td>
+                                            <td><span className="log-dir dir-out">▶ OUT</span></td>
                                             <td><span className="log-session-badge">{log.session}</span></td>
                                             <td style={{ fontFamily: 'var(--mono)', fontSize: '11px' }}>{log.to}</td>
                                             <td className="log-msg" title={log.text}>{log.text}</td>
@@ -380,6 +444,73 @@ function App() {
                                     ))}
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                );
+            case 'blast':
+                return (
+                    <div className="page-area active">
+                        <div className="sec-header">
+                            <div className="sec-title">Kirim Pesan Massal (Blast)</div>
+                        </div>
+                        <div className="stats-row" style={{ gridTemplateColumns: '1.5fr 1fr' }}>
+                            <div className="stat-card" style={{ textAlign: 'left' }}>
+                                <div className="form-group-new">
+                                    <label className="form-label-new">Pilih Akun Sesi</label>
+                                    <select className="form-input-new" value={selectedSession?.id || ''} onChange={e => setSelectedSession(sessions.find(s => s.id === e.target.value))}>
+                                        <option value="">-- Pilih Sesi --</option>
+                                        {sessions.map(s => <option key={s.id} value={s.id}>{s.id} ({s.status})</option>)}
+                                    </select>
+                                </div>
+                                <div className="form-group-new" style={{ marginTop: '1rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <label className="form-label-new">Daftar Nomor (62...)</label>
+                                        <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer', padding: '2px 8px' }}>
+                                            📥 Import .txt / .csv
+                                            <input type="file" hidden accept=".txt,.csv" onChange={handleImport} />
+                                        </label>
+                                    </div>
+                                    <textarea className="form-input-new" style={{ height: '140px', resize: 'none', marginTop: '4px' }} placeholder="628123456789&#10;628121112223" value={bulkNumbers} onChange={e => setBulkNumbers(e.target.value)} />
+                                </div>
+                                <div className="form-group-new" style={{ marginTop: '1rem' }}>
+                                    <label className="form-label-new">Isi Pesan Blast</label>
+                                    <textarea className="form-input-new" style={{ height: '100px', resize: 'none' }} placeholder="Masukkan pesan..." value={message} onChange={e => setMessage(e.target.value)} />
+                                </div>
+                                <div className="form-grid" style={{ marginTop: '1rem' }}>
+                                    <div className="form-group-new">
+                                        <label className="form-label-new">Jeda Interval (Detik)</label>
+                                        <input className="form-input-new" type="number" value={bulkInterval} onChange={e => setBulkInterval(e.target.value)} min="1" />
+                                    </div>
+                                    <div className="form-group-new">
+                                        <label className="form-label-new" style={{ visibility: 'hidden' }}>Action</label>
+                                        <button className="btn btn-primary" onClick={sendBulkMessages} disabled={isBlasting || !selectedSession}>
+                                            {isBlasting ? <Loader2 className="spinner" size={16} /> : <Send size={16} />} 🚀 Mulai Blast
+                                        </button>
+                                    </div>
+                                </div>
+                                {isBlasting && (
+                                    <div style={{ marginTop: '1.5rem' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginBottom: '5px' }}>
+                                            <span>Progress: {blastProgress.current} / {blastProgress.total}</span>
+                                            <span>{Math.round((blastProgress.current / blastProgress.total) * 100)}%</span>
+                                        </div>
+                                        <div style={{ height: '6px', background: 'var(--surface2)', borderRadius: '3px', overflow: 'hidden' }}>
+                                            <div style={{ height: '100%', background: 'var(--wa)', width: `${(blastProgress.current / blastProgress.total) * 100}%`, transition: 'width 0.3s' }}></div>
+                                        </div>
+                                        <button className="btn btn-danger btn-sm" style={{ marginTop: '10px', width: '100%' }} onClick={() => setIsBlasting(false)}>Hentikan Pengiriman</button>
+                                    </div>
+                                )}
+                                {statusMessage && <p style={{ fontSize: '12px', color: 'var(--wa)', marginTop: '0.5rem' }}>{statusMessage}</p>}
+                            </div>
+                            <div className="stat-card" style={{ textAlign: 'left' }}>
+                                <label className="form-label-new">Tips Blast Aman</label>
+                                <div className="qr-steps" style={{ marginTop: '1rem' }}>
+                                    <div className="qr-step"><div className="step-num">1</div><div className="step-text">Gunakan interval minimal 5-10 detik untuk menghindari ban.</div></div>
+                                    <div className="qr-step"><div className="step-num">2</div><div className="step-text">Gunakan sapaan variabel atau isi pesan yang beragam.</div></div>
+                                    <div className="qr-step"><div className="step-num">3</div><div className="step-text">Format nomor harus diawali kode negara (contoh: 628...).</div></div>
+                                    <div className="qr-step"><div className="step-num">4</div><div className="step-text">Import file mendukung format .txt atau .csv (nomor dipisah baris/koma).</div></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 );
@@ -529,8 +660,12 @@ function App() {
                     <span className="sb-count">{sessions.length}</span>
                     <div className="sb-dot"></div>
                 </div>
+                <div className={`sb-item ${currentPage === 'blast' ? 'active' : ''}`} onClick={() => showPage('blast')}>
+                    <Send className="sb-icon" size={18} /> Kirim Pesan
+                    <div className="sb-dot"></div>
+                </div>
                 <div className={`sb-item ${currentPage === 'messages' ? 'active' : ''}`} onClick={() => showPage('messages')}>
-                    <MessageSquare className="sb-icon" size={18} /> Messenging
+                    <MessageSquare className="sb-icon" size={18} /> Riwayat Pesan
                     <div className="sb-dot"></div>
                 </div>
                 <div className={`sb-item ${currentPage === 'steps' ? 'active' : ''}`} onClick={() => showPage('steps')}>
