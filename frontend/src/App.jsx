@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
-import { Plus, Wifi, WifiOff, MessageSquare, Trash2, Send, QrCode, Loader2, Code, Copy } from 'lucide-react';
+import { Plus, Wifi, WifiOff, MessageSquare, Trash2, Send, QrCode, Loader2, Code, Copy, CheckCircle } from 'lucide-react';
 import './App.css';
 
 const SOCKET_URL = window.location.origin;
@@ -12,6 +12,7 @@ function App() {
     const [sessions, setSessions] = useState([]);
     const [newSessionId, setNewSessionId] = useState('');
     const [isInitializing, setIsInitializing] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
     const [activeQr, setActiveQr] = useState(null);
     const [selectedSession, setSelectedSession] = useState(null);
     const [message, setMessage] = useState('');
@@ -30,9 +31,14 @@ function App() {
 
         socket.on('ready', ({ sessionId }) => {
             setIsInitializing(false);
-            fetchSessions();
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 8000);
+            fetchSessions().then(data => {
+                const connected = data?.find(s => s.id === sessionId);
+                if (connected) setSelectedSession(connected);
+            });
             if (activeQr?.sessionId === sessionId) setActiveQr(null);
-            setStatusMessage(`Session ${sessionId} is ready!`);
+            setStatusMessage(`Berhasil! Sesi ${sessionId} siap digunakan.`);
         });
 
         socket.on('disconnected', ({ sessionId }) => {
@@ -51,6 +57,7 @@ function App() {
                 headers: { 'x-api-key': API_KEY }
             });
             setSessions(res.data);
+            return res.data;
         } catch (err) {
             console.error('Failed to fetch sessions', err);
         }
@@ -144,7 +151,20 @@ function App() {
                 </aside>
 
                 <section className="content">
-                    {isInitializing ? (
+                    {showSuccess ? (
+                        <div className="success-state card">
+                            <CheckCircle size={80} color="#25D366" />
+                            <h2>Berhasil Terkonek!</h2>
+                            <p>Perangkat Anda sudah terhubung sebagai <strong>{selectedSession?.id}</strong>.</p>
+                            <div className="next-steps info-box">
+                                <strong>Langkah Selanjutnya:</strong>
+                                <ul>
+                                    <li>Sekarang Anda bisa kirim pesan lewat dashboard ini.</li>
+                                    <li>Atau gunakan **API Key** dan **Session ID** untuk kirim otomatis dari sistem lain.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    ) : isInitializing ? (
                         <div className="loading-state card">
                             <Loader2 size={64} className="spinner" color="#25D366" />
                             <h3>Initializing <span>{newSessionId}</span></h3>
@@ -158,6 +178,19 @@ function App() {
                                 <img src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(activeQr.qr)}`} alt="QR Code" />
                             </div>
                             <p>Open WhatsApp on your phone and scan the code to link.</p>
+                        </div>
+                    ) : showSuccess ? (
+                        <div className="success-state card">
+                            <CheckCircle size={80} color="#25D366" style={{ marginBottom: '1.25rem' }} />
+                            <h2>Berhasil Terkonek!</h2>
+                            <p>Perangkat Anda sudah terhubung sebagai <strong>{selectedSession?.id}</strong>.</p>
+                            <div className="next-steps info-box">
+                                <strong>Langkah Selanjutnya:</strong>
+                                <ul style={{ paddingLeft: '1.25rem', marginTop: '0.5rem', textAlign: 'left' }}>
+                                    <li>Dashboard ini sudah bisa digunakan untuk tes kirim.</li>
+                                    <li>Gunakan **API Key** di website Anda untuk kirim otomatis.</li>
+                                </ul>
+                            </div>
                         </div>
                     ) : selectedSession ? (
                         <div className="chat-interface card">
