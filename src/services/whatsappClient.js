@@ -13,6 +13,10 @@ class WhatsAppClient {
     }
 
     async initSession(sessionId) {
+        if (!/^[a-zA-Z0-9_-]+$/.test(sessionId)) {
+            throw new Error('Invalid session ID format. Use only alphanumeric, underscore, or hyphen.');
+        }
+
         if (this.clients.has(sessionId)) {
             logger.info(`Session ${sessionId} already exists.`);
             return this.clients.get(sessionId);
