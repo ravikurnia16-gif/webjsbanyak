@@ -4,9 +4,9 @@ import axios from 'axios';
 import { Plus, Wifi, WifiOff, MessageSquare, Trash2, Send, QrCode } from 'lucide-react';
 import './App.css';
 
-const SOCKET_URL = 'http://localhost:3000';
-const API_BASE = 'http://localhost:3000/api';
-const API_KEY = 'your_secret_api_key'; // In production, this should be handled better
+const SOCKET_URL = window.location.origin;
+const API_BASE = `${window.location.origin}/api`;
+const API_KEY = 'your_secret_api_key'; 
 
 function App() {
     const [sessions, setSessions] = useState([]);

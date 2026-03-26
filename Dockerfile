@@ -1,4 +1,12 @@
-# Use Node.js 20 slim as base
+# Stage 1: Build Frontend
+FROM node:20-slim AS frontend-build
+WORKDIR /frontend
+COPY frontend/package*.json ./
+RUN npm install
+COPY frontend/ ./
+RUN npm run build
+
+# Stage 2: Setup Backend
 FROM node:20-slim
 
 # Install Chromium and necessary dependencies for Puppeteer
@@ -14,28 +22,21 @@ RUN apt-get update \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /app
-
-# Copy package files
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
-
-# Copy source code
 COPY . .
+
+# Copy built frontend to backend static public folder
+COPY --from=frontend-build /frontend/dist/ ./src/public/
 
 # Create volume directory for WhatsApp sessions
 RUN mkdir -p .wwebjs_auth && chmod 777 .wwebjs_auth
 
-# Expose port
 EXPOSE 3000
 
-# Environment variables (Defaults)
 ENV PORT=3000
 ENV NODE_ENV=production
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
-# Start the application
 CMD ["node", "src/app.js"]
