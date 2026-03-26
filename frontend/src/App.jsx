@@ -107,7 +107,8 @@ function App() {
             <header>
                 <div className="logo">
                     <MessageSquare size={32} color="#25D366" />
-                    <h1>WhatsApp Gateway <span>Multi-Account</span></h1>
+                    <h1>WhatsApp Gateway</h1>
+                    <span>v2.0 Premium</span>
                 </div>
                 <div className="header-actions">
                     <input 
@@ -129,18 +130,16 @@ function App() {
                         {sessions.map(session => (
                             <div 
                                 key={session.id} 
-                                className={`session-item ${selectedSession?.id === session.id ? 'active' : ''}`}
+                                className={`session-item ${selectedSession && selectedSession.id === session.id ? 'active' : ''}`}
                                 onClick={() => setSelectedSession(session)}
                             >
-                                <div className="session-info">
-                                    <span className="session-name">{session.id}</span>
-                                    <span className="status-badge connected">
-                                        <Wifi size={14} /> Connected
-                                    </span>
+                                <span className="session-name">{session.id}</span>
+                                <div className="status-badge connected">
+                                    <Wifi size={14} /> Connected
                                 </div>
                             </div>
                         ))}
-                        {sessions.length === 0 && <p className="empty-state">No active sessions</p>}
+                        {sessions.length === 0 && <p className="empty-state">No sessions found.</p>}
                     </div>
                 </aside>
 
