@@ -17,10 +17,11 @@ class WhatsAppClient {
             return this.clients.get(sessionId);
         }
 
-        logger.info(`Initializing session: ${sessionId}`);
+        logger.info(`Initializing session: ${sessionId} with Chromium: ${process.env.PUPPETEER_EXECUTABLE_PATH || 'default'}`);
         const client = new Client({
             authStrategy: new LocalAuth({ clientId: sessionId }),
             puppeteer: {
+                executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
                 headless: true,
                 args: [
                     '--no-sandbox',
@@ -29,7 +30,7 @@ class WhatsAppClient {
                     '--disable-accelerated-2d-canvas',
                     '--no-first-run',
                     '--no-zygote',
-                    '--single-process', // <- this one element is very important
+                    '--single-process',
                     '--disable-gpu'
                 ]
             }

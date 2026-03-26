@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
-import { Plus, Wifi, WifiOff, MessageSquare, Trash2, Send, QrCode } from 'lucide-react';
+import { Plus, Wifi, WifiOff, MessageSquare, Trash2, Send, QrCode, Loader2 } from 'lucide-react';
 import './App.css';
 
 const SOCKET_URL = window.location.origin;
@@ -11,6 +11,7 @@ const API_KEY = 'your_secret_api_key';
 function App() {
     const [sessions, setSessions] = useState([]);
     const [newSessionId, setNewSessionId] = useState('');
+    const [isInitializing, setIsInitializing] = useState(false);
     const [activeQr, setActiveQr] = useState(null);
     const [selectedSession, setSelectedSession] = useState(null);
     const [message, setMessage] = useState('');
@@ -18,15 +19,17 @@ function App() {
     const [statusMessage, setStatusMessage] = useState('');
 
     useEffect(() => {
-        const socket = io(SOCKET_URL);
+        const socket = io(SOCKET_URL, { transports: ['websocket'] });
 
         socket.on('qr', ({ sessionId, qr }) => {
+            setIsInitializing(false);
             if (sessionId === newSessionId || sessions.find(s => s.id === sessionId)) {
                 setActiveQr({ sessionId, qr });
             }
         });
 
         socket.on('ready', ({ sessionId }) => {
+            setIsInitializing(false);
             fetchSessions();
             if (activeQr?.sessionId === sessionId) setActiveQr(null);
             setStatusMessage(`Session ${sessionId} is ready!`);
@@ -55,13 +58,15 @@ function App() {
 
     const createSession = async () => {
         if (!newSessionId) return;
+        setIsInitializing(true);
+        setActiveQr(null);
         try {
             await axios.post(`${API_BASE}/sessions`, { sessionId: newSessionId }, {
                 headers: { 'x-api-key': API_KEY }
             });
-            setNewSessionId('');
             setStatusMessage('Initializing session... QR code will appear soon.');
         } catch (err) {
+            setIsInitializing(false);
             setStatusMessage('Error creating session');
         }
     };
@@ -140,7 +145,13 @@ function App() {
                 </aside>
 
                 <section className="content">
-                    {activeQr ? (
+                    {isInitializing ? (
+                        <div className="loading-state card">
+                            <Loader2 size={64} className="spinner" color="#25D366" />
+                            <h3>Initializing <span>{newSessionId}</span></h3>
+                            <p>Starting WhatsApp... This may take up to 60 seconds.</p>
+                        </div>
+                    ) : activeQr ? (
                         <div className="qr-container card">
                             <h3>Scan QR for <span>{activeQr.sessionId}</span></h3>
                             <div className="qr-box">
