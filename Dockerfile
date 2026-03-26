@@ -37,6 +37,7 @@ EXPOSE 3000
 
 ENV PORT=3000
 ENV NODE_ENV=production
+ENV API_KEY=your_secret_api_key
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 CMD ["node", "src/app.js"]
