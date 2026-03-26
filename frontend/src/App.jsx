@@ -24,9 +24,7 @@ function App() {
 
         socket.on('qr', ({ sessionId, qr }) => {
             setIsInitializing(false);
-            if (sessionId === newSessionId || sessions.find(s => s.id === sessionId)) {
-                setActiveQr({ sessionId, qr });
-            }
+            setActiveQr({ sessionId, qr });
         });
 
         socket.on('ready', ({ sessionId }) => {
@@ -43,13 +41,13 @@ function App() {
 
         socket.on('disconnected', ({ sessionId }) => {
             fetchSessions();
-            setStatusMessage(`Session ${sessionId} disconnected.`);
+            setStatusMessage(`Sesi ${sessionId} terputus.`);
         });
 
         fetchSessions();
 
         return () => socket.disconnect();
-    }, [newSessionId]);
+    }, []); // Empty dependency array
 
     const fetchSessions = async () => {
         try {

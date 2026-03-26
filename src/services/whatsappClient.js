@@ -35,8 +35,6 @@ class WhatsAppClient {
                     '--disable-dev-shm-usage',
                     '--disable-accelerated-2d-canvas',
                     '--no-first-run',
-                    '--no-zygote',
-                    '--single-process',
                     '--disable-gpu',
                     '--disable-canvas-aa',
                     '--disable-2d-canvas-clip-aa',
