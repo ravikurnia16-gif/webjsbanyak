@@ -10,7 +10,6 @@ import './App.css';
 
 const SOCKET_URL = window.location.origin;
 const API_BASE = `${window.location.origin}/api`;
-const API_KEY = 'your_secret_api_key'; // Default, ideally from env
 
 function App() {
     const [currentPage, setCurrentPage] = useState('dashboard');
@@ -26,6 +25,7 @@ function App() {
     const [searchQuery, setSearchQuery] = useState('');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+    const [appApiKey, setAppApiKey] = useState(localStorage.getItem('wa_api_key') || 'your_secret_api_key');
     const [logs, setLogs] = useState([
         { id: 1, dir: 'out', session: 'system', to: '62812xxxxxx', text: 'Sistem siap digunakan.', type: 'text', time: new Date().toLocaleTimeString(), status: 'Sent' }
     ]);
@@ -80,7 +80,7 @@ function App() {
     const fetchSessions = async () => {
         try {
             const res = await axios.get(`${API_BASE}/sessions`, {
-                headers: { 'x-api-key': API_KEY }
+                headers: { 'x-api-key': appApiKey }
             });
             setSessions(res.data);
             return res.data;
@@ -103,24 +103,32 @@ function App() {
         setIsAddModalOpen(false);
         try {
             await axios.post(`${API_BASE}/sessions`, { sessionId: newSessionId }, {
-                headers: { 'x-api-key': API_KEY }
+                headers: { 'x-api-key': appApiKey }
             });
             setNewSessionId('');
             setStatusMessage('Initializing... Tunggu sebentar untuk QR Code.');
         } catch (err) {
             setIsInitializing(false);
-            setStatusMessage('Gagal membuat sesi');
+            setStatusMessage('Gagal membuat sesi. Periksa API Key di Settings.');
         }
     };
 
     const sendMessage = async () => {
         if (!selectedSession || !phoneNumber || !message) return;
+        
+        // Check if session is connected
+        const isConnected = selectedSession.status === 'CONNECTED' || selectedSession.status === 'AUTHENTICATED';
+        if (!isConnected) {
+            alert(`Sesi ${selectedSession.id} belum terkoneksi. Silakan Scan QR terlebih dahulu.`);
+            return;
+        }
+
         try {
             await axios.post(`${API_BASE}/send-message`, {
                 sessionId: selectedSession.id,
                 number: phoneNumber,
                 message: message,
-                apikey: API_KEY
+                apikey: appApiKey
             });
             setLogs(prev => [{
                 id: Date.now(),
@@ -136,7 +144,8 @@ function App() {
             setStatusMessage('Pesan terkirim!');
             setTimeout(() => setStatusMessage(''), 3000);
         } catch (err) {
-            setStatusMessage('Gagal mengirim pesan');
+            setStatusMessage('Gagal mengirim pesan. Periksa API Key di Settings.');
+            alert('Gagal mengirim pesan. Pastikan nomor benar dan API Key valid.');
         }
     };
 
@@ -144,7 +153,7 @@ function App() {
         if (!window.confirm(`Hapus sesi ${sid}?`)) return;
         try {
             await axios.delete(`${API_BASE}/sessions/${sid}`, {
-                headers: { 'x-api-key': API_KEY }
+                headers: { 'x-api-key': appApiKey }
             });
             fetchSessions();
             if (selectedSession?.id === sid) setSelectedSession(null);
@@ -447,7 +456,7 @@ fetch('${API_BASE}/send-message', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'x-api-key': '${API_KEY}'
+    'x-api-key': '${appApiKey}'
   },
   body: JSON.stringify({
     sessionId: 'sesi-utama', // ID yang Anda buat
@@ -503,7 +512,7 @@ fetch('${API_BASE}/send-message', {
                                 {`// Kirim Pesan via API
 fetch('${API_BASE}/send', {
   method: 'GET',
-  headers: { 'x-api-key': '${API_KEY}' }
+  headers: { 'x-api-key': '${appApiKey}' }
 })`}
                             </div>
                         </div>
@@ -544,6 +553,11 @@ fetch('${API_BASE}/send', {
                 <div className={`sb-item ${currentPage === 'steps' ? 'active' : ''}`} onClick={() => showPage('steps')}>
                     <ListChecks className="sb-icon" size={18} /> Langkah
                     <div className="sb-dot"></div>
+                </div>
+
+                <div className="sb-section">Settings</div>
+                <div className={`sb-item ${currentPage === 'settings' ? 'active' : ''}`} onClick={() => showPage('settings')}>
+                    <Settings className="sb-icon" size={18} /> Configuration
                 </div>
 
                 <div className="sb-section">Developer</div>
