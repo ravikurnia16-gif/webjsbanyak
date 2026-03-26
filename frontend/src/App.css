@@ -288,6 +288,48 @@ main {
   animation: rotate 2s linear infinite;
 }
 
+.guide-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.guide-tabs {
+  text-align: left;
+  margin-top: 2rem;
+}
+
+.guide-section {
+  margin-bottom: 1.5rem;
+}
+
+.guide-section h4 {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-dark);
+}
+
+.guide-section pre {
+  background: #2d3436;
+  color: #fab1a0;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  overflow-x: auto;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.info-box {
+  background: #e1f5fe;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: #0277bd;
+  margin-top: 1rem;
+}
+
 @keyframes rotate {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

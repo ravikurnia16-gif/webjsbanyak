@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
-import { Plus, Wifi, WifiOff, MessageSquare, Trash2, Send, QrCode, Loader2 } from 'lucide-react';
+import { Plus, Wifi, WifiOff, MessageSquare, Trash2, Send, QrCode, Loader2, Code, Copy } from 'lucide-react';
 import './App.css';
 
 const SOCKET_URL = window.location.origin;
@@ -191,9 +191,36 @@ function App() {
                         </div>
                     ) : (
                         <div className="welcome-state card">
-                            <QrCode size={64} color="#ddd" />
-                            <h2>Welcome to Dashboard</h2>
-                            <p>Select a session or add a new one to get started.</p>
+                            <div className="guide-header">
+                                <Code size={32} color="#25D366" />
+                                <h2>Panduan Integrasi API</h2>
+                            </div>
+                            <p>Sesi aktif akan muncul di sebelah kiri. Berikut cara kirim pesan dari sistem Anda:</p>
+                            
+                            <div className="guide-tabs">
+                                <div className="guide-section">
+                                    <h4>1. Kirim via URL (GET)</h4>
+                                    <pre>
+                                        <code>{`https://${window.location.host}/api/send?apikey=${API_KEY}&sessionId=NAMA_SESI&number=628...&message=Halo`}</code>
+                                    </pre>
+                                </div>
+
+                                <div className="guide-section">
+                                    <h4>2. Kirim via JSON (POST)</h4>
+                                    <pre>
+                                        <code>{`{
+  "apikey": "${API_KEY}",
+  "sessionId": "NAMA_SESI",
+  "number": "628123456789",
+  "message": "Pesan Anda"
+}`}</code>
+                                    </pre>
+                                </div>
+                            </div>
+                            
+                            <div className="info-box">
+                                <p><strong>Tips:</strong> Ganti <code>NAMA_SESI</code> dengan nama yang Anda buat di kolom "New Session ID".</p>
+                            </div>
                         </div>
                     )}
                 </section>
