@@ -13,10 +13,6 @@ class WhatsAppClient {
     }
 
     async initSession(sessionId) {
-        if (!/^[a-zA-Z0-9_-]+$/.test(sessionId)) {
-            throw new Error('Invalid session ID format. Use only alphanumeric, underscore, or hyphen.');
-        }
-
         if (this.clients.has(sessionId)) {
             logger.info(`Session ${sessionId} already exists.`);
             return this.clients.get(sessionId);
@@ -35,7 +31,7 @@ class WhatsAppClient {
                     remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
                 },
                 puppeteer: {
-                    executablePath: process.platform === 'win32' ? undefined : (process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium'),
+                    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
                     headless: true,
                     args: [
                         '--no-sandbox',
@@ -98,6 +94,7 @@ class WhatsAppClient {
                 this.statuses.delete(sessionId);
             });
 
+            /* 
             client.on('message', async msg => {
                 logger.info(`Message received from ${msg.from} on session ${sessionId}: ${msg.body}`);
                 if (this.io) {
@@ -108,6 +105,7 @@ class WhatsAppClient {
                     });
                 }
             });
+            */
 
             try {
                 await client.initialize();

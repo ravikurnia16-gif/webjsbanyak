@@ -59,6 +59,7 @@ function App() {
             setStatusMessage(`Sesi ${sessionId} terputus.`);
         });
 
+        /* 
         socket.on('message', (msg) => {
             setLogs(prev => [{
                 id: Date.now(),
@@ -71,6 +72,7 @@ function App() {
                 status: 'Read'
             }, ...prev].slice(0, 50));
         });
+        */
 
         fetchSessions();
 
